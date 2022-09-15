@@ -2,16 +2,15 @@ package requestHandler.controller;
 
 
 import model.User;
-import webserver.ProcessedRequest;
-import webserver.RequestParser;
+import http.HttpRequest;
 
 import java.util.Map;
 
 public class SignUpController implements Controller {
 
     @Override
-    public byte[] process(ProcessedRequest processedRequest) {
-        User user = createUser(processedRequest.getParams());
+    public byte[] process(HttpRequest httpRequest) {
+        User user = createUser(httpRequest.getParams());
         return user.toString().getBytes();
     }
 
