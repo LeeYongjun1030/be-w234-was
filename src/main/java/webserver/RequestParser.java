@@ -5,17 +5,31 @@ import java.util.Map;
 
 public class RequestParser {
 
-    public String getUrl(String startLine) {
+    private String startLine;
+
+    public RequestParser(String startLine) {
+        this.startLine = startLine;
+    }
+
+    public ProcessedRequest parse() {
+        String url = extractUrl(startLine);
+        String path = extractPath(url);
+        Map<String, String> params = extractParams(url);
+
+        return new ProcessedRequest(url, path, params);
+    }
+
+    private String extractUrl(String startLine) {
         String[] tokens = startLine.split(" ");
         return tokens[1];
     }
 
-    public String getPath(String url) {
+    private String extractPath(String url) {
         String[] tokens = url.split("\\?");
         return tokens[0];
     }
 
-    public Map<String, String> getParams(String url) {
+    private Map<String, String> extractParams(String url) {
         Map<String, String> params = new HashMap<>();
 
         String[] tokens = url.split("\\?");
@@ -24,7 +38,7 @@ public class RequestParser {
             return null;
         }
 
-        // queryParams에는 url의 ? 이후의 문자열이 담긴다.
+        // queryParams에는 url의 ? 이후의 쿼리파라미터가 담긴다.
         String queryParams = tokens[1];
         String[] pairs = queryParams.split("&");
         for (String pair : pairs) {
