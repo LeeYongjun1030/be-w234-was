@@ -1,22 +1,47 @@
 package webserver;
 
+import http.HttpMethod;
+import http.HttpRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import util.IOUtils;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class RequestParser {
+    private static final Logger logger = LoggerFactory.getLogger(RequestParser.class);
 
-    private String startLine;
+    public HttpRequest parse(BufferedReader reader) throws IOException {
 
-    public RequestParser(String startLine) {
-        this.startLine = startLine;
-    }
-
-    public ProcessedRequest parse() {
+        //start-line
+        String startLine = reader.readLine();
+        HttpMethod httpMethod = extractHttpMethod(startLine);
         String url = extractUrl(startLine);
         String path = extractPath(url);
         Map<String, String> params = extractParams(url);
 
-        return new ProcessedRequest(url, path, params);
+        //headers
+        Map<String, String> headers = new HashMap<>();
+        String line;
+        while (!"".equals((line = reader.readLine()))&& line != null) {
+            String[] keyVal = line.split(":", 2);
+            headers.put(keyVal[0], keyVal[1]);
+        }
+//            //body
+//            int contentLength = Integer.parseInt(headers.get("contentLength"));
+//            IOUtils.readData(reader, contentLength)
+
+        return new HttpRequest(httpMethod, path, params, headers);
+    }
+
+    private HttpMethod extractHttpMethod(String startLine) {
+        String[] tokens = startLine.split(" ");
+        return HttpMethod.valueOf(tokens[0].toUpperCase());
     }
 
     private String extractUrl(String startLine) {
