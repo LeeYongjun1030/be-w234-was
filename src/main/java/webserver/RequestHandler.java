@@ -3,13 +3,11 @@ package webserver;
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import urlHandler.UrlHandlerMapper;
-import urlHandler.handler.StaticHtmlHandler;
-import urlHandler.handler.UrlHandler;
+import requestHandler.ControllerMapper;
+import requestHandler.controller.Controller;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -26,19 +24,24 @@ public class RequestHandler implements Runnable {
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
 
-            RequestParser requestParser = new RequestParser();
+
+            // request parsing
             BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
-            String url = requestParser.getUrl(br.readLine());
+            RequestParser requestParser = new RequestParser(br.readLine());
+            ProcessedRequest processedRequest = requestParser.parse();
+
+            // controller mapping
+            ControllerMapper cm = new ControllerMapper();
+            Controller controller = cm.controllerMapping(processedRequest.getPath());
 
             // process
-            UrlHandlerMapper urlHandlerMapper = new UrlHandlerMapper();
-            UrlHandler urlHandler = urlHandlerMapper.HandlerMapping(url);
+            byte[] body = controller.process(processedRequest);
 
             // response
-            byte[] body = urlHandler.handle(url);
             DataOutputStream dos = new DataOutputStream(out);
             response200Header(dos, body.length);
             responseBody(dos, body);
+
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
