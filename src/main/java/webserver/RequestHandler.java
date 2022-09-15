@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
+import http.HttpRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import requestHandler.ControllerMapper;
@@ -24,18 +25,17 @@ public class RequestHandler implements Runnable {
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
 
-
             // request parsing
             BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
-            RequestParser requestParser = new RequestParser(br.readLine());
-            ProcessedRequest processedRequest = requestParser.parse();
+            RequestParser requestParser = new RequestParser();
+            HttpRequest httpRequest = requestParser.parse(br);
 
             // controller mapping
             ControllerMapper cm = new ControllerMapper();
-            Controller controller = cm.controllerMapping(processedRequest.getPath());
+            Controller controller = cm.controllerMapping(httpRequest.getPath());
 
             // process
-            byte[] body = controller.process(processedRequest);
+            byte[] body = controller.process(httpRequest);
 
             // response
             DataOutputStream dos = new DataOutputStream(out);
