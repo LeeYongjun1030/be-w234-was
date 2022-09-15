@@ -1,19 +1,17 @@
-package urlHandler.handler;
+package requestHandler.controller;
 
 
 import model.User;
+import webserver.ProcessedRequest;
 import webserver.RequestParser;
 
 import java.util.Map;
 
-public class SignUpHandler implements UrlHandler {
-
-    RequestParser requestParser = new RequestParser();
+public class SignUpController implements Controller {
 
     @Override
-    public byte[] handle(String url) {
-        Map<String, String> params = requestParser.getParams(url);
-        User user = createUser(params);
+    public byte[] process(ProcessedRequest processedRequest) {
+        User user = createUser(processedRequest.getParams());
         return user.toString().getBytes();
     }
 
