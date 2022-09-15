@@ -1,69 +1,42 @@
-import org.junit.jupiter.api.BeforeEach;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import webserver.ProcessedRequest;
 import webserver.RequestParser;
-import java.util.Map;
+
 import static org.assertj.core.api.Assertions.*;
 
 public class RequestParserTest {
 
-    RequestParser requestParser;
-
-    @BeforeEach
-    void beforeEach() {
-        requestParser = new RequestParser();
-    }
-
     @Test
-    @DisplayName("request message로부터 url을 추출할 수 있어햐 한다")
-    void getUrl() {
+    @DisplayName("request로부터 필요한 데이터를 추출할 수 있어야 한다")
+    void parsingTest() {
         //given
-        String startLine = "GET /index.html HTTP/1.1";
+        String startLine = "GET /test?name=james&age=28 HTTP/1.1";
+        RequestParser requestParser = new RequestParser(startLine);
 
         //when
-        String sut = requestParser.getUrl(startLine);
+        ProcessedRequest sut = requestParser.parse();
 
         //then
-        assertThat(sut).isEqualTo("/index.html");
+        assertThat(sut.getUrl()).isEqualTo("/test?name=james&age=28");
+        assertThat(sut.getPath()).isEqualTo("/test");
+        assertThat(sut.getParams().get("name")).isEqualTo("james");
+        assertThat(sut.getParams().get("age")).isEqualTo("28");
     }
 
-    @Test
-    @DisplayName("url로부터 path를 추출할 수 있어야 한다")
-    void getPath() {
-        //given
-        String url = "/test?userId=testId";
-
-        //when
-        String sut = requestParser.getPath(url);
-
-        //then
-        assertThat(sut).isEqualTo("/test");
-    }
-
-    @Test
-    @DisplayName("url로부터 파라미터를 추출할 수 있어야 한다")
-    void getParams() {
-        //given
-        String url = "/test?userId=testId&password=testPw";
-
-        //when
-        Map<String, String> sut = requestParser.getParams(url);
-
-        //then
-        assertThat(sut.get("userId")).isEqualTo("testId");
-        assertThat(sut.get("password")).isEqualTo("testPw");
-    }
 
     @Test
     @DisplayName("url에 파라미터가 없는 경우, params는 null을 반환해야 한다")
-    void getParams2() {
+    void getParamsNullTest() {
         //given
-        String url = "/test";
+        String startLine = "GET /test HTTP/1.1";
+        RequestParser requestParser = new RequestParser(startLine);
 
         //when
-        Map<String, String> sut = requestParser.getParams(url);
+        ProcessedRequest sut = requestParser.parse();
 
         //then
-        assertThat(sut).isNull();
+        assertThat(sut.getParams()).isNull();
     }
 }
