@@ -1,25 +1,34 @@
 
+import http.HttpMethod;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import webserver.ProcessedRequest;
+import http.HttpRequest;
 import webserver.RequestParser;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
 
 import static org.assertj.core.api.Assertions.*;
 
 public class RequestParserTest {
 
+    RequestParser requestParser = new RequestParser();
+    BufferedReader br;
+
     @Test
-    @DisplayName("request로부터 필요한 데이터를 추출할 수 있어야 한다")
-    void parsingTest() {
+    @DisplayName("request message로부터 HttpRequest 객체를 만들어낼 수 있어야 한다.")
+    void parsingTest() throws IOException {
         //given
-        String startLine = "GET /test?name=james&age=28 HTTP/1.1";
-        RequestParser requestParser = new RequestParser(startLine);
+        String msg = "GET /test?name=james&age=28 HTTP/1.1\n" +
+                "Connection: keep-alive";
+        br = new BufferedReader(new StringReader(msg));
 
         //when
-        ProcessedRequest sut = requestParser.parse();
+        HttpRequest sut = requestParser.parse(br);
 
         //then
-        assertThat(sut.getUrl()).isEqualTo("/test?name=james&age=28");
+        assertThat(sut.getHttpMethod()).isEqualTo(HttpMethod.GET);
         assertThat(sut.getPath()).isEqualTo("/test");
         assertThat(sut.getParams().get("name")).isEqualTo("james");
         assertThat(sut.getParams().get("age")).isEqualTo("28");
@@ -28,13 +37,13 @@ public class RequestParserTest {
 
     @Test
     @DisplayName("url에 파라미터가 없는 경우, params는 null을 반환해야 한다")
-    void getParamsNullTest() {
+    void getParamsNullTest() throws IOException {
         //given
-        String startLine = "GET /test HTTP/1.1";
-        RequestParser requestParser = new RequestParser(startLine);
+        String msg = "GET /test HTTP/1.1";
+        br = new BufferedReader(new StringReader(msg));
 
         //when
-        ProcessedRequest sut = requestParser.parse();
+        HttpRequest sut = requestParser.parse(br);
 
         //then
         assertThat(sut.getParams()).isNull();
