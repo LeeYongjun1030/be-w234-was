@@ -3,6 +3,7 @@ package webserver;
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 
 import http.HttpRequest;
 import http.HttpResponse;
@@ -42,26 +43,10 @@ public class RequestHandler implements Runnable {
     private void writeResponse(OutputStream out, HttpResponse httpResponse) {
         try {
             DataOutputStream dos = new DataOutputStream(out);
-            dos.writeBytes(httpResponse.toString());
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
-    }
-
-    private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
-        try {
-            dos.writeBytes("HTTP/1.1 200 OK \r\n");
-            dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
-            dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
-            dos.writeBytes("\r\n");
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
-    }
-
-    private void responseBody(DataOutputStream dos, byte[] body) {
-        try {
-            dos.write(body, 0, body.length);
+            ArrayList<byte[]> response = httpResponse.toHttpResponseMessage();
+            for (byte[] data : response) {
+                dos.write(data, 0, data.length);
+            }
             dos.flush();
         } catch (IOException e) {
             logger.error(e.getMessage());
