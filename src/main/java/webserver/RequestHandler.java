@@ -33,15 +33,15 @@ public class RequestHandler implements Runnable {
             HttpRequest httpRequest = requestParser.parse(br);
             Controller controller = controllerMapper.controllerMapping(httpRequest.getPath());
             HttpResponse httpResponse = controller.process(httpRequest);
-            DataOutputStream dos = new DataOutputStream(out);
-            writeResponse(dos, httpResponse);
+            writeResponse(out, httpResponse);
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
     }
 
-    private void writeResponse(DataOutputStream dos, HttpResponse httpResponse) {
+    private void writeResponse(OutputStream out, HttpResponse httpResponse) {
         try {
+            DataOutputStream dos = new DataOutputStream(out);
             dos.writeBytes(httpResponse.toString());
         } catch (IOException e) {
             logger.error(e.getMessage());
