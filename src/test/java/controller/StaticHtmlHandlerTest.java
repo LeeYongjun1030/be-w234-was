@@ -1,12 +1,13 @@
+package controller;
+
 import http.HttpMethod;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import requestHandler.controller.StaticHtmlController;
+import controller.StaticHtmlController;
 import http.HttpRequest;
 
 import java.io.IOException;
-import java.util.HashMap;
 
 import static org.assertj.core.api.Assertions.*;
 

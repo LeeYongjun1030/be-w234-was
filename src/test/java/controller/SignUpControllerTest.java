@@ -1,9 +1,10 @@
-import http.HttpMethod;
+package controller;
+
 import model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import requestHandler.controller.SignUpController;
+import controller.SignUpController;
 import http.HttpRequest;
 
 import java.util.HashMap;

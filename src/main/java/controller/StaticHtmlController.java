@@ -1,4 +1,4 @@
-package requestHandler.controller;
+package controller;
 
 import http.HttpRequest;
 

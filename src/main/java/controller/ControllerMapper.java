@@ -1,8 +1,8 @@
-package requestHandler;
+package controller;
 
-import requestHandler.controller.StaticHtmlController;
-import requestHandler.controller.SignUpController;
-import requestHandler.controller.Controller;
+import controller.StaticHtmlController;
+import controller.SignUpController;
+import controller.Controller;
 
 import java.io.File;
 import java.util.HashMap;
