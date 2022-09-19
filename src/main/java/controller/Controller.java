@@ -1,10 +1,9 @@
 package controller;
 
 import http.HttpRequest;
-
-import java.io.IOException;
+import http.HttpResponse;
 
 public interface Controller {
 
-    byte[] process(HttpRequest httpRequest) throws IOException;
+    HttpResponse process(HttpRequest httpRequest);
 }
