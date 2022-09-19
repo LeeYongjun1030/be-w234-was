@@ -3,6 +3,7 @@ package http;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -21,9 +22,9 @@ public class HttpResponse {
         this.headers = headers;
         this.body = body;
 
-        logger.debug("Http Status : {}", httpStatus);
+        logger.debug("Http Status : {} {}", httpStatus.getCode(), httpStatus.getReasonPhrase());
         logger.debug("Headers : {}", headers);
-        logger.debug("Body : {}", body);
+        logger.debug("Body : {}", new String(body));
     }
 
     public HttpStatus getHttpStatus() {
@@ -38,7 +39,13 @@ public class HttpResponse {
         return body;
     }
 
-    public byte[] toBytes(){
-        return this.toString().getBytes();
+    public ArrayList<byte[]> toHttpResponseMessage(){
+        ArrayList<byte[]> httpMessage = new ArrayList<>();
+        String startLine = "HTTP/1.1 " + httpStatus.getCode() + " " + httpStatus.getReasonPhrase() + "\r\n";
+        httpMessage.add(startLine.getBytes());
+        headers.forEach((k, v) -> httpMessage.add((k + ": " + v + "\r\n").getBytes()));
+        httpMessage.add("\r\n".getBytes());
+        httpMessage.add(body);
+        return httpMessage;
     }
 }
