@@ -1,15 +1,10 @@
-package webserver;
+package http;
 
-import http.HttpMethod;
-import http.HttpRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import util.IOUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.Reader;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
