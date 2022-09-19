@@ -35,7 +35,6 @@ public class RequestParserTest {
         assertThat(sut.getParams().get("age")).isEqualTo("28");
     }
 
-
     @Test
     @DisplayName("url에 파라미터가 없는 경우, params는 null을 반환해야 한다")
     void getParamsNullTest() throws IOException {

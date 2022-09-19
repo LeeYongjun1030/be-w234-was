@@ -1,5 +1,6 @@
 package controller;
 
+import http.HttpResponse;
 import model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -7,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import controller.SignUpController;
 import http.HttpRequest;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,11 +31,12 @@ public class SignUpControllerTest {
         HttpRequest httpRequest = new HttpRequest(null, null, params, null);
 
         //when
-        byte[] sut = signUpController.process(httpRequest);
+        HttpResponse sut = signUpController.process(httpRequest);
 
         //then
         User user = new User("testId", "password", "taki", "taki@abcd.com");
-        assertThat(new String(sut)).isEqualTo(user.toString());
+        assertThat(sut.getHttpStatus().getCode()).isEqualTo(200);
+        assertThat(sut.getBody()).isEqualTo(user.toString().getBytes());
     }
 
     private Map<String, String> initParams(String userId, String password, String name, String email) {
