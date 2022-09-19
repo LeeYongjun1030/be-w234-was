@@ -1,9 +1,5 @@
 package controller;
 
-import controller.StaticHtmlController;
-import controller.SignUpController;
-import controller.Controller;
-
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
