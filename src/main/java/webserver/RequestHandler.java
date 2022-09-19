@@ -5,11 +5,12 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
 import http.HttpRequest;
+import http.HttpResponse;
 import http.RequestParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import requestHandler.ControllerMapper;
-import requestHandler.controller.Controller;
+import controller.ControllerMapper;
+import controller.Controller;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -30,16 +31,18 @@ public class RequestHandler implements Runnable {
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
             HttpRequest httpRequest = requestParser.parse(br);
-
             Controller controller = controllerMapper.controllerMapping(httpRequest.getPath());
-
-            byte[] body = controller.process(httpRequest);
-
-            // response
+            HttpResponse httpResponse = controller.process(httpRequest);
             DataOutputStream dos = new DataOutputStream(out);
-            response200Header(dos, body.length);
-            responseBody(dos, body);
+            writeResponse(dos, httpResponse);
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        }
+    }
 
+    private void writeResponse(DataOutputStream dos, HttpResponse httpResponse) {
+        try {
+            dos.writeBytes(httpResponse.toString());
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
