@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.*;
 
 public class SignUpControllerTest {
 
-    SignUpController signUpController;
+    Controller signUpController;
 
     @BeforeEach
     void beforeEach() {

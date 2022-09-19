@@ -12,8 +12,7 @@ import java.io.IOException;
 import static org.assertj.core.api.Assertions.*;
 
 public class StaticHtmlControllerTest {
-
-    StaticHtmlController staticHtmlController;
+    Controller staticHtmlController;
 
     @BeforeEach
     void beforeEach() {
