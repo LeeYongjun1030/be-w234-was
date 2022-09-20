@@ -28,14 +28,14 @@ public class StyleSheetController implements Controller {
 
     private HttpResponse getHttpResponse(HttpRequest httpRequest) throws IOException {
         HttpStatus httpStatus = new HttpStatus(HttpStatusCode.SUCCESSFUL, "OK");
-        byte[] body = Files.readAllBytes(new File("./webapp/css/styles.css").toPath());
+        byte[] body = Files.readAllBytes(new File("./webapp" + httpRequest.getPath()).toPath());
         Map<String, String> headers = createHeaders(body);
         return new HttpResponse(httpStatus, headers, body);
     }
 
     private Map<String, String> createHeaders(byte[] body) {
         Map<String, String> headers = new HashMap<>();
-        headers.put("Content-Type", "text/css;charset=utf-8");
+        headers.put("Content-Type", "text/css");
         headers.put("Content-Length", String.valueOf(body.length));
         return headers;
     }
