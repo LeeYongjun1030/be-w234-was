@@ -18,20 +18,28 @@ public class SignUpController implements Controller {
 
     @Override
     public HttpResponse process(HttpRequest httpRequest) {
-        User user = createUser(httpRequest.getParams());
+        User user = createUser(httpRequest.getBody());
         return getHttpResponse(user);
     }
 
-    private User createUser(Map<String, String> params) {
-        String userId = params.get("userId");
-        String password = params.get("password");
-        String name = params.get("name");
-        String email = params.get("email");
+    private User createUser(String body) {
+
+        Map<String, String> data = new HashMap<>();
+        String[] keyAndValues = body.split("&");
+        for (String keyVal : keyAndValues) {
+            String[] pair = keyVal.split("=");
+            data.put(pair[0], pair[1]);
+        }
+
+        String userId = data.get("userId");
+        String password = data.get("password");
+        String name = data.get("name");
+        String email = data.get("email");
         return new User(userId, password, name, email);
     }
 
     private HttpResponse getHttpResponse(User user) {
-        HttpStatus httpStatus = new HttpStatus(HttpStatusCode.SUCCESSFUL, "OK");
+        HttpStatus httpStatus = new HttpStatus(HttpStatusCode.REDIRECT, "Redirect");
         Map<String, String> headers = createHeaders(user.toString().getBytes());
         return new HttpResponse(httpStatus, headers, user.toString().getBytes());
     }
