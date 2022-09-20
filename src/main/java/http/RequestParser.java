@@ -2,6 +2,7 @@ package http;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.IOUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,11 +28,15 @@ public class RequestParser {
             String[] keyVal = line.split(":", 2);
             headers.put(keyVal[0], keyVal[1]);
         }
-//            //body
-//            int contentLength = Integer.parseInt(headers.get("contentLength"));
-//            IOUtils.readData(reader, contentLength)
 
-        return new HttpRequest(httpMethod, path, params, headers);
+        //body
+        String body = null;
+        if (headers.containsKey("Content-Length")) {
+            int contentLength = Integer.parseInt(headers.get("Content-Length").trim());
+            body = IOUtils.readData(reader, contentLength);
+        }
+
+        return new HttpRequest(httpMethod, path, params, headers, body);
     }
 
     private HttpMethod extractHttpMethod(String startLine) {
