@@ -9,8 +9,8 @@ public class ControllerMapper {
     private Map<String, Controller> handlers = new HashMap<>();
 
     public ControllerMapper() {
-        // init
         handlers.put("/user/create", new SignUpController());
+        handlers.put("/user/login", new SignInController());
     }
 
     public Controller controllerMapping(String path) {
