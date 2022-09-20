@@ -15,17 +15,21 @@ public class HttpRequest {
     private Map<String, String> params;
     private Map<String, String> headers;
 
+    private String body;
 
-    public HttpRequest(HttpMethod httpMethod, String path, Map<String, String> params, Map<String, String> headers) {
+
+    public HttpRequest(HttpMethod httpMethod, String path, Map<String, String> params, Map<String, String> headers, String body) {
         this.httpMethod = httpMethod;
         this.path = path;
         this.params = params;
         this.headers = headers;
+        this.body = body;
 
         logger.debug("Http method : {}", httpMethod);
         logger.debug("Path : {}", path);
         logger.debug("Params : {}", params);
         logger.debug("Headers : {}", headers);
+        logger.debug("Body : {}", body);
     }
 
     public HttpMethod getHttpMethod() {
@@ -44,4 +48,7 @@ public class HttpRequest {
         return headers;
     }
 
+    public String getBody() {
+        return body;
+    }
 }
