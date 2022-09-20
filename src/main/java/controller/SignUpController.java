@@ -37,15 +37,14 @@ public class SignUpController implements Controller {
     }
 
     private HttpResponse getHttpResponse(User user) {
-        HttpStatus httpStatus = new HttpStatus(HttpStatusCode.REDIRECT, "Redirect");
-        Map<String, String> headers = createHeaders(user.toString().getBytes());
+        HttpStatus httpStatus = new HttpStatus(HttpStatusCode.REDIRECT, "Found");
+        Map<String, String> headers = createHeaders();
         return new HttpResponse(httpStatus, headers, user.toString().getBytes());
     }
 
-    private Map<String, String> createHeaders(byte[] body) {
+    private Map<String, String> createHeaders() {
         Map<String, String> headers = new HashMap<>();
-        headers.put("Content-Type", "text/html;charset=utf-8");
-        headers.put("Content-Length", String.valueOf(body.length));
+        headers.put("Location", "/index.html");
         return headers;
     }
 }
