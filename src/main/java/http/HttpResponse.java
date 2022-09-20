@@ -22,7 +22,9 @@ public class HttpResponse {
 
         logger.debug("Http Status : {} {}", httpStatus.getCode(), httpStatus.getReasonPhrase());
         logger.debug("Headers : {}", headers);
-        logger.debug("Body : {}", new String(body));
+        if (body != null) {
+            logger.debug("Body : {}", new String(body));
+        }
     }
 
     public HttpStatus getHttpStatus() {
