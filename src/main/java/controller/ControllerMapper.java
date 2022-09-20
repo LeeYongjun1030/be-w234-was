@@ -11,6 +11,7 @@ public class ControllerMapper {
     public ControllerMapper() {
         handlers.put("/user/create", new SignUpController());
         handlers.put("/user/login", new SignInController());
+        handlers.put("/user/list", new UserListController());
     }
 
     public Controller controllerMapping(String path) {
