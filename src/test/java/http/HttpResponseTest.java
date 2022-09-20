@@ -2,10 +2,6 @@ package http;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +17,7 @@ public class HttpResponseTest {
         HttpResponse httpResponse = getHttpResponse();
 
         //when
-        ArrayList<byte[]> sut = httpResponse.toHttpResponseMessage();
+        ArrayList<byte[]> sut = httpResponse.convertToHttpResponseMessage();
 
         //then
         assertThat(sut.get(0)).isEqualTo("HTTP/1.1 200 OK\r\n".getBytes());

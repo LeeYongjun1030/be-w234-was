@@ -4,7 +4,6 @@ import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-
 import http.HttpRequest;
 import http.HttpResponse;
 import http.RequestParser;
@@ -43,7 +42,7 @@ public class RequestHandler implements Runnable {
     private void writeResponse(OutputStream out, HttpResponse httpResponse) {
         try {
             DataOutputStream dos = new DataOutputStream(out);
-            ArrayList<byte[]> response = httpResponse.toHttpResponseMessage();
+            ArrayList<byte[]> response = httpResponse.convertToHttpResponseMessage();
             for (byte[] data : response) {
                 dos.write(data, 0, data.length);
             }

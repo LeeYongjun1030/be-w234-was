@@ -2,9 +2,7 @@ package http;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Map;
 
 public class HttpResponse {
@@ -39,7 +37,7 @@ public class HttpResponse {
         return body;
     }
 
-    public ArrayList<byte[]> toHttpResponseMessage(){
+    public ArrayList<byte[]> convertToHttpResponseMessage(){
         ArrayList<byte[]> httpMessage = new ArrayList<>();
         addStartLine(httpMessage);
         addHeaders(httpMessage);
@@ -53,7 +51,7 @@ public class HttpResponse {
     }
 
     private void addHeaders(ArrayList<byte[]> httpMessage) {
-        headers.forEach((k, v) -> httpMessage.add(String.format("%s: %s\r\n", k, v).getBytes()));
+        headers.forEach((k, v) -> httpMessage.add(String.format("%s: %s\r\n", k, v).getBytes())); //headers
         httpMessage.add("\r\n".getBytes()); //empty line
     }
 

@@ -1,11 +1,7 @@
 package http;
 
-import http.HttpMethod;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import http.HttpRequest;
-import http.RequestParser;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
