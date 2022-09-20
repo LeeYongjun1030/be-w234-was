@@ -23,7 +23,6 @@ public class SignUpController implements Controller {
     }
 
     private User createUser(String body) {
-
         Map<String, String> data = new HashMap<>();
         String[] keyAndValues = body.split("&");
         for (String keyVal : keyAndValues) {
