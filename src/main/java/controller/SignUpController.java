@@ -47,6 +47,7 @@ public class SignUpController implements Controller {
     private Map<String, String> createHeaders() {
         Map<String, String> headers = new HashMap<>();
         headers.put("Location", "/index.html");
+        headers.put("Content-Type", "text/html;charset=utf-8");
         return headers;
     }
 }
