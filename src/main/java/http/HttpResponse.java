@@ -41,11 +41,24 @@ public class HttpResponse {
 
     public ArrayList<byte[]> toHttpResponseMessage(){
         ArrayList<byte[]> httpMessage = new ArrayList<>();
-        String startLine = "HTTP/1.1 " + httpStatus.getCode() + " " + httpStatus.getReasonPhrase() + "\r\n";
-        httpMessage.add(startLine.getBytes());
-        headers.forEach((k, v) -> httpMessage.add((k + ": " + v + "\r\n").getBytes()));
-        httpMessage.add("\r\n".getBytes());
-        httpMessage.add(body);
+        addStartLine(httpMessage);
+        addHeaders(httpMessage);
+        addBody(httpMessage);
         return httpMessage;
     }
+
+    private void addStartLine(ArrayList<byte[]> httpMessage) {
+        String startLine = String.format("HTTP/1.1 %s %s\r\n", httpStatus.getCode(), httpStatus.getReasonPhrase());
+        httpMessage.add(startLine.getBytes());
+    }
+
+    private void addHeaders(ArrayList<byte[]> httpMessage) {
+        headers.forEach((k, v) -> httpMessage.add(String.format("%s: %s\r\n", k, v).getBytes()));
+        httpMessage.add("\r\n".getBytes()); //empty line
+    }
+
+    private void addBody(ArrayList<byte[]> httpMessage) {
+        httpMessage.add(body);
+    }
+
 }
