@@ -1,6 +1,7 @@
 package controller;
 
 import http.HttpResponse;
+import http.HttpStatusCode;
 import model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -27,24 +28,19 @@ public class SignUpControllerTest {
     @DisplayName("회원가입 시 회원 정보가 User 클래스에 저장되어야 한다")
     void signup() {
         //given
-        Map<String, String> params = initParams("testId", "password", "taki", "taki@abcd.com");
-        HttpRequest httpRequest = new HttpRequest(null, null, params, null);
+        String body = getBody("testId", "password", "taki", "taki@abcd.com");
+        HttpRequest httpRequest = new HttpRequest(null, null, null, null, body);
 
         //when
         HttpResponse sut = signUpController.process(httpRequest);
 
         //then
         User user = new User("testId", "password", "taki", "taki@abcd.com");
-        assertThat(sut.getHttpStatus().getCode()).isEqualTo(200);
+        assertThat(sut.getHttpStatus().getCode()).isEqualTo(HttpStatusCode.REDIRECT);
         assertThat(sut.getBody()).isEqualTo(user.toString().getBytes());
     }
 
-    private Map<String, String> initParams(String userId, String password, String name, String email) {
-        Map<String, String> params = new HashMap<>();
-        params.put("userId", userId);
-        params.put("password", password);
-        params.put("name", name);
-        params.put("email", email);
-        return params;
+    private String getBody(String userId, String password, String name, String email) {
+        return String.format("userId=%s&password=%s&name=%s&email=%s", userId, password, name, email);
     }
 }
