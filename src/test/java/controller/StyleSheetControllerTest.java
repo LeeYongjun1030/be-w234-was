@@ -22,17 +22,17 @@ public class StyleSheetControllerTest {
     }
 
     @Test
-    @DisplayName(".css 파일 요청을 처리할 수 있어야 한다")
+    @DisplayName("css 파일 요청을 처리하여 응답 메시지를 만들 수 있어야 한다")
     void styleSheetProcess() {
         //given
-        HttpRequest httpRequest = new HttpRequest(HttpMethod.GET, "./css/style.css", null, null);
+        HttpRequest httpRequest = new HttpRequest(HttpMethod.GET, "/css/styles.css", null, null, null);
 
         //when
         HttpResponse sut = styleSheetController.process(httpRequest);
 
         //then
         assertThat(sut.getHttpStatus().getCode()).isEqualTo(200);
-        assertThat(sut.getHeaders().get("Content-Type")).isEqualTo("text/css;charset=utf-8");
+        assertThat(sut.getHeaders().get("Content-Type")).isEqualTo("text/css");
         assertThat(sut.getBody()).isNotEmpty();
 
     }

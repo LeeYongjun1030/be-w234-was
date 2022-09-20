@@ -20,10 +20,10 @@ public class StaticHtmlControllerTest {
     }
 
     @Test
-    @DisplayName("/index.html 접속 시 webapp/index.html 파일을 반환해야 한다")
+    @DisplayName("/index.html 요청 시 응답으로 webapp/index.html 파일을 반환해야 한다")
     void test() {
         //given
-        HttpRequest httpRequest = new HttpRequest(HttpMethod.GET, "/index.html", null, null);
+        HttpRequest httpRequest = new HttpRequest(HttpMethod.GET, "/index.html", null, null, null);
 
         //when
         HttpResponse sut = staticHtmlController.process(httpRequest);
