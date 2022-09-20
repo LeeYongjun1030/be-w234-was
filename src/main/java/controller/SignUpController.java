@@ -1,6 +1,7 @@
 package controller;
 
 
+import db.Database;
 import http.HttpResponse;
 import http.HttpStatus;
 import http.HttpStatusCode;
@@ -18,6 +19,7 @@ public class SignUpController implements Controller {
     @Override
     public HttpResponse process(HttpRequest httpRequest) {
         User user = createUser(httpRequest.getBody());
+        Database.addUser(user);
         return getHttpResponse(user);
     }
 
