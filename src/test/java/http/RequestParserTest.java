@@ -14,7 +14,7 @@ public class RequestParserTest {
     BufferedReader br;
 
     @Test
-    @DisplayName("request message로부터 HttpRequest 객체를 만들어낼 수 있어야 한다.")
+    @DisplayName("http 요청 메시지를 파싱하여 HttpRequest 객체를 만들어낼 수 있어야 한다.")
     void parsingTest() throws IOException {
         //given
         String msg = "GET /test?name=james&age=28 HTTP/1.1\n" +
