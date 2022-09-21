@@ -12,11 +12,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class SignInControllerTest {
 
-    Controller signInController;
+    Controller controller;
 
     @BeforeEach
     void beforeEach() {
-        signInController = new SignInController();
+        controller = new SignInController();
     }
 
     @AfterEach
@@ -32,7 +32,7 @@ public class SignInControllerTest {
 
         //when
         HttpRequest loginInput = createHttpRequestFromInput("testId", "1234");
-        HttpResponse sut = signInController.process(loginInput);
+        HttpResponse sut = controller.process(loginInput);
 
         //then
         assertThat(sut.getHeaders().get("Set-Cookie")).isEqualTo("logined=true; Path=/");
@@ -46,7 +46,7 @@ public class SignInControllerTest {
 
         //when
         HttpRequest loginInput = createHttpRequestFromInput("xxxx", "1234");
-        HttpResponse sut = signInController.process(loginInput);
+        HttpResponse sut = controller.process(loginInput);
 
         //then
         assertThat(sut.getHeaders().get("Set-Cookie")).isEqualTo("logined=false; Path=/");
@@ -60,7 +60,7 @@ public class SignInControllerTest {
 
         //when
         HttpRequest loginInput = createHttpRequestFromInput("testId", "4321");
-        HttpResponse sut = signInController.process(loginInput);
+        HttpResponse sut = controller.process(loginInput);
 
         //then
         assertThat(sut.getHeaders().get("Set-Cookie")).isEqualTo("logined=false; Path=/");

@@ -11,11 +11,11 @@ import static org.assertj.core.api.Assertions.*;
 
 public class SignUpControllerTest {
 
-    Controller signUpController;
+    Controller controller;
 
     @BeforeEach
     void beforeEach() {
-       signUpController = new SignUpController();
+        controller = new SignUpController();
     }
 
     @AfterEach
@@ -29,7 +29,7 @@ public class SignUpControllerTest {
         //given
         String body = getBody("testId", "password", "타키", "taki@abcd.com");
         HttpRequest httpRequest = new HttpRequest(null, null, null, null, body);
-        signUpController.process(httpRequest);
+        controller.process(httpRequest);
 
         //when
         User sut = Database.findUserById("testId");

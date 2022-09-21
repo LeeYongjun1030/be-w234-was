@@ -10,11 +10,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class StyleSheetControllerTest {
 
-    Controller styleSheetController;
+    Controller controller;
 
     @BeforeEach
     void beforeEach() {
-        styleSheetController = new StyleSheetController();
+        controller = new StyleSheetController();
     }
 
     @Test
@@ -24,7 +24,7 @@ public class StyleSheetControllerTest {
         HttpRequest httpRequest = new HttpRequest(HttpMethod.GET, "/css/styles.css", null, null, null);
 
         //when
-        HttpResponse sut = styleSheetController.process(httpRequest);
+        HttpResponse sut = controller.process(httpRequest);
 
         //then
         assertThat(sut.getHttpStatus().getCode()).isEqualTo(200);

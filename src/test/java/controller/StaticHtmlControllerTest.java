@@ -9,11 +9,11 @@ import http.HttpRequest;
 import static org.assertj.core.api.Assertions.*;
 
 public class StaticHtmlControllerTest {
-    Controller staticHtmlController;
+    Controller controller;
 
     @BeforeEach
     void beforeEach() {
-        staticHtmlController = new StaticHtmlController();
+        controller = new StaticHtmlController();
     }
 
     @Test
@@ -23,7 +23,7 @@ public class StaticHtmlControllerTest {
         HttpRequest httpRequest = new HttpRequest(HttpMethod.GET, "/index.html", null, null, null);
 
         //when
-        HttpResponse sut = staticHtmlController.process(httpRequest);
+        HttpResponse sut = controller.process(httpRequest);
 
         //then
         assertThat(sut.getHttpStatus().getCode()).isEqualTo(200);
