@@ -66,7 +66,7 @@ public class RequestParser {
         Map<String, String> headers = new HashMap<>();
         String line;
         while (!"".equals((line = reader.readLine()))&& line != null) {
-            String[] keyVal = line.split(":", 2);
+            String[] keyVal = line.split(": ", 2);
             headers.put(keyVal[0], keyVal[1]);
         }
         return headers;
@@ -75,7 +75,7 @@ public class RequestParser {
     private String getBody(BufferedReader reader, Map<String, String> headers) throws IOException {
         String body = null;
         if (headers.containsKey("Content-Length")) {
-            int contentLength = Integer.parseInt(headers.get("Content-Length").trim());
+            int contentLength = Integer.parseInt(headers.get("Content-Length"));
             String data = IOUtils.readData(reader, contentLength);
             body = URLDecoder.decode(data, StandardCharsets.UTF_8);
         }
