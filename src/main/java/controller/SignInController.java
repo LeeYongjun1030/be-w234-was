@@ -40,11 +40,7 @@ public class SignInController implements Controller{
         boolean login;
         try {
             User findUser = Database.findUserById(userId);
-            if (findUser.getPassword().equals(password)) {
-                login = true;
-            } else {
-                login = false;
-            }
+            login = findUser.getPassword().equals(password);
         } catch (RuntimeException e) {
             login = false;
         }
