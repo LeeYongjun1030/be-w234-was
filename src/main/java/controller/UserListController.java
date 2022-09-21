@@ -6,15 +6,34 @@ import http.HttpResponse;
 import http.HttpStatus;
 import http.HttpStatusCode;
 import model.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 public class UserListController implements Controller{
 
+    private static final Logger logger = LoggerFactory.getLogger(UserListController.class);
     @Override
     public HttpResponse process(HttpRequest httpRequest) {
+        return (isLoginUser(httpRequest)) ? userListPage() : loginPage();
+    }
 
+    private boolean isLoginUser(HttpRequest httpRequest) {
+        boolean isLogin = false;
+        Map<String, String> headers = httpRequest.getHeaders();
+        if (headers.containsKey("Cookie")) {
+            if (headers.get("Cookie").equals("logined=true")) {
+                isLogin = true;
+            }
+        }
+        logger.debug("IsLoginUser {}", isLogin);
+        return isLogin;
+    }
+
+    private HttpResponse userListPage() {
         StringBuilder sb = new StringBuilder();
         beforeHtml(sb);
         createUserListHtml(sb);
@@ -25,6 +44,13 @@ public class UserListController implements Controller{
         headers.put("Content-Type", "text/html;charset=utf-8");
         headers.put("Content-Length", String.valueOf(sb.toString().getBytes().length));
         return new HttpResponse(httpStatus, headers, sb.toString().getBytes());
+    }
+
+    private HttpResponse loginPage() {
+        HttpStatus httpStatus = new HttpStatus(HttpStatusCode.REDIRECT, "Found");
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Location", "/user/login.html");
+        return new HttpResponse(httpStatus, headers, null);
     }
 
     private void createUserListHtml(StringBuilder sb) {
