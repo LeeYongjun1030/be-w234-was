@@ -18,7 +18,7 @@ public class StaticHtmlControllerTest {
 
     @Test
     @DisplayName("/index.html 요청 시 응답으로 webapp/index.html 파일을 반환해야 한다")
-    void test() {
+    void staticHtmlTest() {
         //given
         HttpRequest httpRequest = new HttpRequest(HttpMethod.GET, "/index.html", null, null, null);
 
@@ -27,6 +27,7 @@ public class StaticHtmlControllerTest {
 
         //then
         assertThat(sut.getHttpStatus().getCode()).isEqualTo(200);
+        assertThat(sut.getHeaders().get("Content-Type")).isEqualTo("text/html;charset=utf-8");
         assertThat(sut.getBody()).isNotEmpty();
     }
 }
