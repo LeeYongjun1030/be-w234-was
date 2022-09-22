@@ -8,7 +8,9 @@ import http.HttpStatusCode;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.LoginInfo;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,47 +20,45 @@ public class SignInController implements Controller{
 
     @Override
     public HttpResponse process(HttpRequest httpRequest) {
-        Map<String, String> loginInput = getLoginIdAndPassword(httpRequest.getBody());
-        String userId = loginInput.get("userId");
-        String password = loginInput.get("password");
-
-        boolean isLoginSucceed = verify(userId, password);
-        return createHttpResponse(isLoginSucceed);
+        LoginInfo loginInput = getLoginIdAndPassword(httpRequest.getBody());
+        return verify(loginInput) ? loginSuccess() : loginFail();
     }
 
-    private Map<String, String> getLoginIdAndPassword(String body) {
-        Map<String, String> loginInput = new HashMap<>();
-        String[] keyAndValues = body.split("&");
-        for (String keyVal : keyAndValues) {
-            String[] pair = keyVal.split("=");
-            loginInput.put(pair[0], pair[1]);
+    private LoginInfo getLoginIdAndPassword(String body) {
+        String userId = "";
+        String password = "";
+        try {
+            String[] keyAndValues = body.split("&");
+            for (String keyVal : keyAndValues) {
+                String[] pair = keyVal.split("=");
+                if(pair[0].equals("userId")) userId = pair[1];
+                if(pair[0].equals("password")) password = pair[1];
+            }
+        } catch (RuntimeException e) {
+            logger.error("입력 정보가 올바르지 않습니다.");
         }
-        return loginInput;
+        return new LoginInfo(userId, password);
     }
 
-    private boolean verify(String userId, String password) {
+    private boolean verify(LoginInfo loginInput) {
+        String inputUserId = loginInput.getUserId();
+        String inputPassword = loginInput.getPassword();
+
         boolean login;
         try {
-            User findUser = Database.findUserById(userId);
-            login = findUser.getPassword().equals(password);
+            User findUser = Database.findUserById(inputUserId);
+            login = findUser.getPassword().equals(inputPassword);
         } catch (RuntimeException e) {
             login = false;
         }
 
-        logger.debug("userId {}", userId);
-        logger.debug("password {}", password);
-        logger.debug("login success? {}", login);
+        logger.debug("InputUserId {}", inputUserId);
+        logger.debug("InputPassword {}", inputPassword);
+        logger.debug("LoginSuccess? {}", login);
         return login;
     }
 
-    private HttpResponse createHttpResponse(boolean login) {
-        if (login) {
-            return createLoginSuccessHttpResponse();
-        } else {
-            return createLoginFailHttpResponse();
-        }
-    }
-    private HttpResponse createLoginSuccessHttpResponse() {
+    private HttpResponse loginSuccess() {
         HttpStatus httpStatus = new HttpStatus(HttpStatusCode.REDIRECT, "Found");
         Map<String, String> headers = new HashMap<>();
         headers.put("Content-Type", "text/html");
@@ -66,7 +66,7 @@ public class SignInController implements Controller{
         headers.put("Set-Cookie", "logined=true; Path=/");
         return new HttpResponse(httpStatus, headers, null);
     }
-    private HttpResponse createLoginFailHttpResponse() {
+    private HttpResponse loginFail() {
         HttpStatus httpStatus = new HttpStatus(HttpStatusCode.REDIRECT, "Found");
         Map<String, String> headers = new HashMap<>();
         headers.put("Content-Type", "text/html");
