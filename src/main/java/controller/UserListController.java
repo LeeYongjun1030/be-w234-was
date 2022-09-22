@@ -18,7 +18,7 @@ public class UserListController implements Controller{
     private static final Logger logger = LoggerFactory.getLogger(UserListController.class);
     @Override
     public HttpResponse process(HttpRequest httpRequest) {
-        return (isLoginUser(httpRequest)) ? userListPage() : loginPage();
+        return (isLoginUser(httpRequest)) ? createHttpResponse() : requestLogin();
     }
 
     private boolean isLoginUser(HttpRequest httpRequest) {
@@ -33,7 +33,7 @@ public class UserListController implements Controller{
         return isLogin;
     }
 
-    private HttpResponse userListPage() {
+    private HttpResponse createHttpResponse() {
         StringBuilder sb = new StringBuilder();
         beforeHtml(sb);
         createUserListHtml(sb);
@@ -46,7 +46,7 @@ public class UserListController implements Controller{
         return new HttpResponse(httpStatus, headers, sb.toString().getBytes());
     }
 
-    private HttpResponse loginPage() {
+    private HttpResponse requestLogin() {
         HttpStatus httpStatus = new HttpStatus(HttpStatusCode.REDIRECT, "Found");
         Map<String, String> headers = new HashMap<>();
         headers.put("Location", "/user/login.html");

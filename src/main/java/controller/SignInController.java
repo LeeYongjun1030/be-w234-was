@@ -23,7 +23,7 @@ public class SignInController implements Controller{
         String password = loginInput.get("password");
 
         boolean isLoginSucceed = verify(userId, password);
-        return getHttpResponse(isLoginSucceed);
+        return createHttpResponse(isLoginSucceed);
     }
 
     private Map<String, String> getLoginIdAndPassword(String body) {
@@ -51,14 +51,14 @@ public class SignInController implements Controller{
         return login;
     }
 
-    private HttpResponse getHttpResponse(boolean login) {
+    private HttpResponse createHttpResponse(boolean login) {
         if (login) {
-            return getLoginSuccessHttpResponse();
+            return createLoginSuccessHttpResponse();
         } else {
-            return getLoginFailHttpResponse();
+            return createLoginFailHttpResponse();
         }
     }
-    private HttpResponse getLoginSuccessHttpResponse() {
+    private HttpResponse createLoginSuccessHttpResponse() {
         HttpStatus httpStatus = new HttpStatus(HttpStatusCode.REDIRECT, "Found");
         Map<String, String> headers = new HashMap<>();
         headers.put("Content-Type", "text/html");
@@ -66,7 +66,7 @@ public class SignInController implements Controller{
         headers.put("Set-Cookie", "logined=true; Path=/");
         return new HttpResponse(httpStatus, headers, null);
     }
-    private HttpResponse getLoginFailHttpResponse() {
+    private HttpResponse createLoginFailHttpResponse() {
         HttpStatus httpStatus = new HttpStatus(HttpStatusCode.REDIRECT, "Found");
         Map<String, String> headers = new HashMap<>();
         headers.put("Content-Type", "text/html");

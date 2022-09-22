@@ -20,7 +20,7 @@ public class SignUpController implements Controller {
     public HttpResponse process(HttpRequest httpRequest) {
         User user = createUser(httpRequest.getBody());
         Database.addUser(user);
-        return getHttpResponse(user);
+        return createHttpResponse(user);
     }
 
     private User createUser(String body) {
@@ -38,7 +38,7 @@ public class SignUpController implements Controller {
         return new User(userId, password, name, email);
     }
 
-    private HttpResponse getHttpResponse(User user) {
+    private HttpResponse createHttpResponse(User user) {
         HttpStatus httpStatus = new HttpStatus(HttpStatusCode.REDIRECT, "Found");
         Map<String, String> headers = createHeaders();
         return new HttpResponse(httpStatus, headers, user.toString().getBytes());

@@ -18,14 +18,14 @@ public class StyleSheetController implements Controller {
     @Override
     public HttpResponse process(HttpRequest httpRequest) {
         try {
-            return getHttpResponse(httpRequest);
+            return createHttpResponse(httpRequest);
         } catch (IOException e) {
             logger.error(e.getMessage());
             return null;
         }
     }
 
-    private HttpResponse getHttpResponse(HttpRequest httpRequest) throws IOException {
+    private HttpResponse createHttpResponse(HttpRequest httpRequest) throws IOException {
         HttpStatus httpStatus = new HttpStatus(HttpStatusCode.SUCCESSFUL, "OK");
         byte[] body = Files.readAllBytes(new File("./webapp" + httpRequest.getPath()).toPath());
         Map<String, String> headers = createHeaders(body);
