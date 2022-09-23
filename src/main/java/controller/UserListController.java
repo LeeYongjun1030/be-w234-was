@@ -39,6 +39,7 @@ public class UserListController implements Controller{
         return new HttpResponse.Builder(HttpStatus.SUCCESSFUL)
                 .header("Content-Type", "text/html;charset=utf-8")
                 .header("Content-Length", String.valueOf(sb.toString().getBytes().length))
+                .body(sb.toString().getBytes())
                 .build();
     }
 
