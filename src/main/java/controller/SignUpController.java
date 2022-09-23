@@ -19,7 +19,12 @@ public class SignUpController implements Controller {
     public HttpResponse process(HttpRequest httpRequest) {
         User user = createUser(httpRequest.getBody());
         Database.addUser(user);
-        return createHttpResponse(user);
+
+        return new HttpResponse.Builder(HttpStatus.REDIRECT)
+                .header("Location", "/index.html")
+                .header("Content-Type", "text/html;charset=utf-8")
+                .body(user.toString().getBytes())
+                .build();
     }
 
     private User createUser(String body) {
@@ -35,18 +40,5 @@ public class SignUpController implements Controller {
         String name = data.get("name");
         String email = data.get("email");
         return new User(userId, password, name, email);
-    }
-
-    private HttpResponse createHttpResponse(User user) {
-        HttpStatus httpStatus = HttpStatus.REDIRECT;
-        Map<String, String> headers = createHeaders();
-        return new HttpResponse(httpStatus, headers, user.toString().getBytes());
-    }
-
-    private Map<String, String> createHeaders() {
-        Map<String, String> headers = new HashMap<>();
-        headers.put("Location", "/index.html");
-        headers.put("Content-Type", "text/html;charset=utf-8");
-        return headers;
     }
 }

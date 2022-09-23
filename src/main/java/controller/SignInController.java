@@ -8,8 +8,6 @@ import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.LoginInfo;
-import java.util.HashMap;
-import java.util.Map;
 
 public class SignInController implements Controller{
 
@@ -56,20 +54,18 @@ public class SignInController implements Controller{
     }
 
     private HttpResponse loginSuccess() {
-        HttpStatus httpStatus = HttpStatus.REDIRECT;
-        Map<String, String> headers = new HashMap<>();
-        headers.put("Content-Type", "text/html");
-        headers.put("Location", "/index.html");
-        headers.put("Set-Cookie", "logined=true; Path=/");
-        return new HttpResponse(httpStatus, headers, null);
+        return new HttpResponse.Builder(HttpStatus.REDIRECT)
+                .header("Location", "/index.html")
+                .header("Content-Type", "text/html")
+                .header("Set-Cookie", "logined=true; Path=/")
+                .build();
     }
 
     private HttpResponse loginFail() {
-        HttpStatus httpStatus = HttpStatus.REDIRECT;
-        Map<String, String> headers = new HashMap<>();
-        headers.put("Content-Type", "text/html");
-        headers.put("Location", "/user/login_failed.html");
-        headers.put("Set-Cookie", "logined=false; Path=/");
-        return new HttpResponse(httpStatus, headers, null);
+        return new HttpResponse.Builder(HttpStatus.REDIRECT)
+                .header("Location", "/user/login_failed.html")
+                .header("Content-Type", "text/html")
+                .header("Set-Cookie", "logined=false; Path=/")
+                .build();
     }
 }

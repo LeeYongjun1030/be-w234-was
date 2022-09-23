@@ -7,9 +7,7 @@ import http.HttpStatus;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 
 public class UserListController implements Controller{
@@ -38,18 +36,16 @@ public class UserListController implements Controller{
         createUserListHtml(sb);
         afterHtml(sb);
 
-        HttpStatus httpStatus = HttpStatus.SUCCESSFUL;
-        Map<String, String> headers = new HashMap<>();
-        headers.put("Content-Type", "text/html;charset=utf-8");
-        headers.put("Content-Length", String.valueOf(sb.toString().getBytes().length));
-        return new HttpResponse(httpStatus, headers, sb.toString().getBytes());
+        return new HttpResponse.Builder(HttpStatus.SUCCESSFUL)
+                .header("Content-Type", "text/html;charset=utf-8")
+                .header("Content-Length", String.valueOf(sb.toString().getBytes().length))
+                .build();
     }
 
     private HttpResponse requestLogin() {
-        HttpStatus httpStatus = HttpStatus.REDIRECT;
-        Map<String, String> headers = new HashMap<>();
-        headers.put("Location", "/user/login.html");
-        return new HttpResponse(httpStatus, headers, null);
+        return new HttpResponse.Builder(HttpStatus.REDIRECT)
+                .header("Location", "/user/login.html")
+                .build();
     }
 
     private void createUserListHtml(StringBuilder sb) {

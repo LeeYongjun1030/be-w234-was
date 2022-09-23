@@ -8,8 +8,6 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.HashMap;
-import java.util.Map;
 
 public class StaticHtmlController implements Controller {
 
@@ -26,16 +24,12 @@ public class StaticHtmlController implements Controller {
     }
 
     private HttpResponse createHttpResponse(HttpRequest httpRequest) throws IOException {
-        HttpStatus httpStatus = HttpStatus.SUCCESSFUL;
-        byte[] body = Files.readAllBytes(new File("./webapp" + httpRequest.getPath()).toPath());
-        Map<String, String> headers = createHeaders(body);
-        return new HttpResponse(httpStatus, headers, body);
-    }
+        byte[] data = Files.readAllBytes(new File("./webapp" + httpRequest.getPath()).toPath());
 
-    private Map<String, String> createHeaders(byte[] body) {
-        Map<String, String> headers = new HashMap<>();
-        headers.put("Content-Type", "text/html;charset=utf-8");
-        headers.put("Content-Length", String.valueOf(body.length));
-        return headers;
+        return new HttpResponse.Builder(HttpStatus.SUCCESSFUL)
+                .header("Content-Type", "text/html;charset=utf-8")
+                .header("Content-Length", String.valueOf(data.length))
+                .body(data)
+                .build();
     }
 }
