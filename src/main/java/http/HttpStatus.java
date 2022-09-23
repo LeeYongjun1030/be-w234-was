@@ -1,11 +1,14 @@
 package http;
 
-public class HttpStatus {
+public enum HttpStatus {
+
+    SUCCESSFUL(200, "OK"),
+    REDIRECT(302, "Found");
 
     private int code;
     private String reasonPhrase;
 
-    public HttpStatus(int code, String reasonPhrase) {
+    HttpStatus(int code, String reasonPhrase) {
         this.code = code;
         this.reasonPhrase = reasonPhrase;
     }
@@ -16,5 +19,9 @@ public class HttpStatus {
 
     public String getReasonPhrase() {
         return reasonPhrase;
+    }
+
+    public void setReasonPhrase(String reasonPhrase) {
+        this.reasonPhrase = reasonPhrase;
     }
 }
