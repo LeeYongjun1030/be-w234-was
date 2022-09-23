@@ -12,16 +12,15 @@ public class HttpRequest {
     private String path;
     private Map<String, String> params;
     private Map<String, String> headers;
-
     private String body;
 
 
-    public HttpRequest(HttpMethod httpMethod, String path, Map<String, String> params, Map<String, String> headers, String body) {
-        this.httpMethod = httpMethod;
-        this.path = path;
-        this.params = params;
-        this.headers = headers;
-        this.body = body;
+    private HttpRequest(Builder builder) {
+        this.httpMethod = builder.httpMethod;
+        this.path = builder.path;
+        this.params = builder.params;
+        this.headers = builder.headers;
+        this.body = builder.body;
 
         logger.debug("Http method : {}", httpMethod);
         logger.debug("Path : {}", path);
@@ -48,5 +47,44 @@ public class HttpRequest {
 
     public String getBody() {
         return body;
+    }
+
+
+    //Builder class
+    public static class Builder {
+
+        private HttpMethod httpMethod;
+        private String path;
+        private Map<String, String> params;
+        private Map<String, String> headers;
+        private String body;
+
+        public Builder(HttpMethod httpMethod) {
+            this.httpMethod = httpMethod;
+        }
+
+        public Builder path(String path) {
+            this.path = path;
+            return this;
+        }
+
+        public Builder params(Map<String, String> params) {
+            this.params = params;
+            return this;
+        }
+
+        public Builder headers(Map<String, String> headers) {
+            this.headers = headers;
+            return this;
+        }
+
+        public Builder body(String body) {
+            this.body = body;
+            return this;
+        }
+
+        public HttpRequest build() {
+            return new HttpRequest(this);
+        }
     }
 }
