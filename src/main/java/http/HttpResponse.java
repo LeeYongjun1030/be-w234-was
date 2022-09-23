@@ -2,6 +2,8 @@ package http;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
 import java.util.Map;
 
 public class HttpResponse {
@@ -14,10 +16,10 @@ public class HttpResponse {
 
     private byte[] body;
 
-    public HttpResponse(HttpStatus httpStatus, Map<String, String> headers, byte[] body) {
-        this.httpStatus = httpStatus;
-        this.headers = headers;
-        this.body = body;
+    private HttpResponse(Builder builder) {
+        this.httpStatus = builder.httpStatus;
+        this.headers = builder.headers;
+        this.body = builder.body;
 
         logger.debug("Http Status : {} {}", httpStatus.getCode(), httpStatus.getReasonPhrase());
         logger.debug("Headers : {}", headers);
@@ -72,4 +74,32 @@ public class HttpResponse {
         return sb.toString().getBytes();
     }
 
+
+    //Builder class
+    public static class Builder {
+
+        private HttpStatus httpStatus;
+        private Map<String, String> headers = new HashMap<>();
+        private byte[] body;
+
+        public Builder(HttpStatus httpStatus) {
+            this.httpStatus = httpStatus;
+        }
+
+        public Builder header(String key, String val) {
+            this.headers.put(key, val);
+            return this;
+        }
+
+        public Builder body(byte[] body) {
+            this.body = body;
+            return this;
+        }
+
+        public HttpResponse build() {
+            return new HttpResponse(this);
+        }
+
+
+    }
 }
