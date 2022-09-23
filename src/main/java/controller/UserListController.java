@@ -17,10 +17,10 @@ public class UserListController implements Controller{
     private static final Logger logger = LoggerFactory.getLogger(UserListController.class);
     @Override
     public HttpResponse process(HttpRequest httpRequest) {
-        return (isLoginUser(httpRequest)) ? createHttpResponse() : requestLogin();
+        return (isLogined(httpRequest)) ? userList() : requestLogin();
     }
 
-    private boolean isLoginUser(HttpRequest httpRequest) {
+    private boolean isLogined(HttpRequest httpRequest) {
         boolean isLogin = false;
         Map<String, String> headers = httpRequest.getHeaders();
         if (headers.containsKey("Cookie")) {
@@ -32,7 +32,7 @@ public class UserListController implements Controller{
         return isLogin;
     }
 
-    private HttpResponse createHttpResponse() {
+    private HttpResponse userList() {
         StringBuilder sb = new StringBuilder();
         beforeHtml(sb);
         createUserListHtml(sb);
