@@ -1,6 +1,7 @@
 package controller;
 
 import db.Database;
+import http.HttpMethod;
 import http.HttpRequest;
 import http.HttpResponse;
 import http.HttpStatus;
@@ -35,7 +36,7 @@ public class UserListControllerTest {
         //given
         Map<String, String> headers = new HashMap<>();
         headers.put("Cookie", "logined=true");
-        HttpRequest httpRequest = new HttpRequest(null, "/user/list", null, headers, null);
+        HttpRequest httpRequest = new HttpRequest.Builder(HttpMethod.GET).path("/user/list").headers(headers).build();
 
         //when
         HttpResponse sut = controller.process(httpRequest);
@@ -50,7 +51,7 @@ public class UserListControllerTest {
         //given
         Map<String, String> headers = new HashMap<>();
         headers.put("Cookie", "logined=false");
-        HttpRequest httpRequest = new HttpRequest(null, "/user/list", null, headers, null);
+        HttpRequest httpRequest = new HttpRequest.Builder(HttpMethod.GET).path("/user/list").headers(headers).build();
 
         //when
         HttpResponse sut = controller.process(httpRequest);

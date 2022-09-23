@@ -1,6 +1,7 @@
 package controller;
 
 import db.Database;
+import http.HttpMethod;
 import model.User;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,11 +12,13 @@ import static org.assertj.core.api.Assertions.*;
 
 public class SignUpControllerTest {
 
-    Controller controller;
+    private Controller controller;
+    private SignUp signUp;
 
     @BeforeEach
     void beforeEach() {
         controller = new SignUpController();
+        signUp = new SignUp("testId", "password", "taki", "taki@abcd.com");
     }
 
     @AfterEach
@@ -27,19 +30,43 @@ public class SignUpControllerTest {
     @DisplayName("회원가입 시 회원 정보가 User 클래스에 저장되어야 한다")
     void signup() {
         //given
-        String body = getBody("testId", "password", "타키", "taki@abcd.com");
-        HttpRequest httpRequest = new HttpRequest(null, null, null, null, body);
-        controller.process(httpRequest);
+        HttpRequest httpRequest = createHttpReq(signUp);
 
         //when
-        User sut = Database.findUserById("testId");
+        controller.process(httpRequest);
 
         //then
-        assertThat(sut.getName()).isEqualTo("타키");
-        assertThat(sut.getEmail()).isEqualTo("taki@abcd.com");
+        User sut = Database.findUserById(signUp.userId);
+        assertThat(sut.getName()).isEqualTo(signUp.name);
+        assertThat(sut.getEmail()).isEqualTo(signUp.email);
     }
 
-    private String getBody(String userId, String password, String name, String email) {
-        return String.format("userId=%s&password=%s&name=%s&email=%s", userId, password, name, email);
+    private HttpRequest createHttpReq(SignUp signUp) {
+        String inputData = input(signUp.userId, signUp.password, signUp.name, signUp.email);
+        return new HttpRequest.Builder(HttpMethod.POST)
+                .body(inputData)
+                .build();
     }
+
+    private String input(String userId, String password, String name, String email) {
+        return "userId=" + userId +
+                "&password=" + password +
+                "&name=" + name +
+                "&email=" + email;
+    }
+
+    private class SignUp {
+        String userId;
+        String password;
+        String name;
+        String email;
+
+        public SignUp(String userId, String password, String name, String email) {
+            this.userId = userId;
+            this.password = password;
+            this.name = name;
+            this.email = email;
+        }
+    }
+
 }

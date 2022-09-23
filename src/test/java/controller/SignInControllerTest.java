@@ -1,6 +1,7 @@
 package controller;
 
 import db.Database;
+import http.HttpMethod;
 import http.HttpRequest;
 import http.HttpResponse;
 import model.User;
@@ -62,6 +63,8 @@ public class SignInControllerTest {
 
     private HttpRequest createHttpRequestFromInput(String userId, String password) {
         String loginInput = String.format("userId=%s&password=%s", userId, password);
-        return new HttpRequest(null, null, null, null, loginInput);
+        return new HttpRequest.Builder(HttpMethod.GET)
+                .body(loginInput)
+                .build();
     }
 }

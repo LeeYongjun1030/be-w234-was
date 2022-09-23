@@ -21,7 +21,7 @@ public class StyleSheetControllerTest {
     @DisplayName("css 파일 요청을 처리하여 응답 메시지를 만들 수 있어야 한다")
     void styleSheetProcess() {
         //given
-        HttpRequest httpRequest = new HttpRequest(HttpMethod.GET, "/css/styles.css", null, null, null);
+        HttpRequest httpRequest = new HttpRequest.Builder(HttpMethod.GET).path("/css/styles.css").build();
 
         //when
         HttpResponse sut = controller.process(httpRequest);
