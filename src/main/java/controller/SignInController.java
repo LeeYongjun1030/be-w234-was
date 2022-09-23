@@ -4,7 +4,6 @@ import db.Database;
 import http.HttpRequest;
 import http.HttpResponse;
 import http.HttpStatus;
-import http.HttpStatusCode;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,15 +56,16 @@ public class SignInController implements Controller{
     }
 
     private HttpResponse loginSuccess() {
-        HttpStatus httpStatus = new HttpStatus(HttpStatusCode.REDIRECT, "Found");
+        HttpStatus httpStatus = HttpStatus.REDIRECT;
         Map<String, String> headers = new HashMap<>();
         headers.put("Content-Type", "text/html");
         headers.put("Location", "/index.html");
         headers.put("Set-Cookie", "logined=true; Path=/");
         return new HttpResponse(httpStatus, headers, null);
     }
+
     private HttpResponse loginFail() {
-        HttpStatus httpStatus = new HttpStatus(HttpStatusCode.REDIRECT, "Found");
+        HttpStatus httpStatus = HttpStatus.REDIRECT;
         Map<String, String> headers = new HashMap<>();
         headers.put("Content-Type", "text/html");
         headers.put("Location", "/user/login_failed.html");

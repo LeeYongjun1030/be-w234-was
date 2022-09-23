@@ -3,7 +3,7 @@ package controller;
 import db.Database;
 import http.HttpRequest;
 import http.HttpResponse;
-import http.HttpStatusCode;
+import http.HttpStatus;
 import model.User;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,7 +41,7 @@ public class UserListControllerTest {
         HttpResponse sut = controller.process(httpRequest);
 
         //then
-        assertThat(sut.getHttpStatus().getCode()).isEqualTo(HttpStatusCode.SUCCESSFUL);
+        assertThat(sut.getHttpStatus()).isEqualTo(HttpStatus.SUCCESSFUL);
     }
 
     @Test
@@ -56,7 +56,7 @@ public class UserListControllerTest {
         HttpResponse sut = controller.process(httpRequest);
 
         //then
-        assertThat(sut.getHttpStatus().getCode()).isEqualTo(HttpStatusCode.REDIRECT);
+        assertThat(sut.getHttpStatus()).isEqualTo(HttpStatus.REDIRECT);
     }
 
 

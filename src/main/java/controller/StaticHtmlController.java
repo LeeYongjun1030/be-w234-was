@@ -3,7 +3,6 @@ package controller;
 import http.HttpRequest;
 import http.HttpResponse;
 import http.HttpStatus;
-import http.HttpStatusCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.io.File;
@@ -27,7 +26,7 @@ public class StaticHtmlController implements Controller {
     }
 
     private HttpResponse createHttpResponse(HttpRequest httpRequest) throws IOException {
-        HttpStatus httpStatus = new HttpStatus(HttpStatusCode.SUCCESSFUL, "OK");
+        HttpStatus httpStatus = HttpStatus.SUCCESSFUL;
         byte[] body = Files.readAllBytes(new File("./webapp" + httpRequest.getPath()).toPath());
         Map<String, String> headers = createHeaders(body);
         return new HttpResponse(httpStatus, headers, body);

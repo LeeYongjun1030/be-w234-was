@@ -4,7 +4,6 @@ package controller;
 import db.Database;
 import http.HttpResponse;
 import http.HttpStatus;
-import http.HttpStatusCode;
 import model.User;
 import http.HttpRequest;
 import org.slf4j.Logger;
@@ -39,7 +38,7 @@ public class SignUpController implements Controller {
     }
 
     private HttpResponse createHttpResponse(User user) {
-        HttpStatus httpStatus = new HttpStatus(HttpStatusCode.REDIRECT, "Found");
+        HttpStatus httpStatus = HttpStatus.REDIRECT;
         Map<String, String> headers = createHeaders();
         return new HttpResponse(httpStatus, headers, user.toString().getBytes());
     }

@@ -4,7 +4,6 @@ import db.Database;
 import http.HttpRequest;
 import http.HttpResponse;
 import http.HttpStatus;
-import http.HttpStatusCode;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +38,7 @@ public class UserListController implements Controller{
         createUserListHtml(sb);
         afterHtml(sb);
 
-        HttpStatus httpStatus = new HttpStatus(HttpStatusCode.SUCCESSFUL, "OK");
+        HttpStatus httpStatus = HttpStatus.SUCCESSFUL;
         Map<String, String> headers = new HashMap<>();
         headers.put("Content-Type", "text/html;charset=utf-8");
         headers.put("Content-Length", String.valueOf(sb.toString().getBytes().length));
@@ -47,7 +46,7 @@ public class UserListController implements Controller{
     }
 
     private HttpResponse requestLogin() {
-        HttpStatus httpStatus = new HttpStatus(HttpStatusCode.REDIRECT, "Found");
+        HttpStatus httpStatus = HttpStatus.REDIRECT;
         Map<String, String> headers = new HashMap<>();
         headers.put("Location", "/user/login.html");
         return new HttpResponse(httpStatus, headers, null);
