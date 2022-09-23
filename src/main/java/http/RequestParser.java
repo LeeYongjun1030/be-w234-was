@@ -17,13 +17,18 @@ public class RequestParser {
         String startLine = reader.readLine();
         String url = getUrl(startLine);
 
-        // make http request
+        // make http-request-object
         HttpMethod httpMethod = getHttpMethod(startLine);
         String path = getPath(url);
         Map<String, String> params = getParams(url);
         Map<String, String> headers = getHeaders(reader);
         String body = getBody(reader, headers);
-        return new HttpRequest(httpMethod, path, params, headers, body);
+        return new HttpRequest.Builder(httpMethod)
+                .path(path)
+                .params(params)
+                .headers(headers)
+                .body(body)
+                .build();
     }
 
     private String getUrl(String startLine) {
