@@ -1,11 +1,11 @@
 package controller;
 
-import db.Database;
+import jpa.db.Database;
 import http.HttpMethod;
 import http.HttpRequest;
 import http.HttpResponse;
 import http.HttpStatus;
-import model.User;
+import jpa.entity.User;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

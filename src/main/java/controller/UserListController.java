@@ -1,10 +1,10 @@
 package controller;
 
-import db.Database;
+import jpa.db.Database;
 import http.HttpRequest;
 import http.HttpResponse;
 import http.HttpStatus;
-import model.User;
+import jpa.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.Collection;
