@@ -17,7 +17,7 @@ public class HttpResponseTest {
                 .build();
 
         //when
-        byte[] sut = httpResponse.convertToHttpResponseMessage();
+        byte[] sut = httpResponse.convertToByteData();
 
         //then
         String[] token = new String(sut).split("\r\n");
@@ -39,7 +39,7 @@ public class HttpResponseTest {
                 .build();
 
         //when
-        byte[] sut = httpResponse.convertToHttpResponseMessage();
+        byte[] sut = httpResponse.convertToByteData();
 
         //then
         String[] token = new String(sut).split("\r\n");

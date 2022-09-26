@@ -40,7 +40,7 @@ public class RequestHandler implements Runnable {
     private void writeResponse(OutputStream out, HttpResponse httpResponse) {
         try {
             DataOutputStream dos = new DataOutputStream(out);
-            byte[] data = httpResponse.convertToHttpResponseMessage();
+            byte[] data = httpResponse.convertToByteData();
             dos.write(data, 0, data.length);
             dos.flush();
         } catch (IOException e) {

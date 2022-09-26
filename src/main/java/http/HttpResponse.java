@@ -40,7 +40,7 @@ public class HttpResponse {
         return body;
     }
 
-    public byte[] convertToHttpResponseMessage(){
+    public byte[] convertToByteData(){
 
         byte[] startLine = createStartLine();
         byte[] headers = createHeaders();
