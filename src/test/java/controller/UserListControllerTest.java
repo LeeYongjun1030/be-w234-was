@@ -1,33 +1,32 @@
 package controller;
 
-import jpa.db.Database;
-import http.HttpMethod;
-import http.HttpRequest;
-import http.HttpResponse;
-import http.HttpStatus;
-import jpa.entity.User;
-import org.junit.jupiter.api.AfterEach;
+import project.controller.Controller;
+import project.controller.UserListController;
+import project.jpa.repository.UserRepository;
+import project.http.HttpMethod;
+import project.http.HttpRequest;
+import project.http.HttpResponse;
+import project.http.HttpStatus;
+import project.jpa.entity.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.HashMap;
 import java.util.Map;
 import static org.assertj.core.api.Assertions.*;
-
+@Transactional
 public class UserListControllerTest {
 
-    Controller controller;
+    private UserRepository userRepository;
+    private Controller controller;
 
     @BeforeEach
     void beforeEach() {
-        controller = new UserListController();
-        Database.addUser(new User("test1", "password", "taki", "taki@abc.com"));
-        Database.addUser(new User("test2", "password", "roki", "roki@abc.com"));
-    }
-
-    @AfterEach
-    void afterEach() {
-        Database.clear();
+        userRepository = new UserRepository();
+        controller = new UserListController(userRepository);
+        userRepository.save(new User("test1", "password", "taki", "taki@abc.com"));
+        userRepository.save(new User("test2", "password", "roki", "roki@abc.com"));
     }
 
     @Test

@@ -1,17 +1,22 @@
-package controller;
+package project.controller;
 
-import jpa.db.Database;
-import http.HttpRequest;
-import http.HttpResponse;
-import http.HttpStatus;
-import jpa.entity.User;
+import project.http.HttpRequest;
+import project.http.HttpResponse;
+import project.http.HttpStatus;
+import project.jpa.repository.UserRepository;
+import project.jpa.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import util.LoginInfo;
+import project.util.LoginInfo;
 
 public class SignInController implements Controller{
 
     private static final Logger logger = LoggerFactory.getLogger(SignInController.class);
+    private UserRepository userRepository;
+
+    public SignInController(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     public HttpResponse process(HttpRequest httpRequest) {
@@ -41,7 +46,7 @@ public class SignInController implements Controller{
 
         boolean login;
         try {
-            User findUser = Database.findUserById(inputUserId);
+            User findUser = userRepository.findById(inputUserId);
             login = findUser.getPassword().equals(inputPassword);
         } catch (RuntimeException e) {
             login = false;

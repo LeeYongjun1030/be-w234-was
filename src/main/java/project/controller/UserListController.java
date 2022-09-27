@@ -1,10 +1,10 @@
-package controller;
+package project.controller;
 
-import jpa.db.Database;
-import http.HttpRequest;
-import http.HttpResponse;
-import http.HttpStatus;
-import jpa.entity.User;
+import project.http.HttpRequest;
+import project.http.HttpResponse;
+import project.http.HttpStatus;
+import project.jpa.repository.UserRepository;
+import project.jpa.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.Collection;
@@ -13,6 +13,13 @@ import java.util.Map;
 public class UserListController implements Controller{
 
     private static final Logger logger = LoggerFactory.getLogger(UserListController.class);
+
+    private UserRepository userRepository;
+
+    public UserListController(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
     @Override
     public HttpResponse process(HttpRequest httpRequest) {
         return (isLogined(httpRequest)) ? userList() : requestLogin();
@@ -51,7 +58,7 @@ public class UserListController implements Controller{
 
     private void createUserListHtml(StringBuilder sb) {
         int num = 1;
-        Collection<User> users = Database.findAll();
+        Collection<User> users = userRepository.findAll();
         for (User user : users) {
             sb.append(
                     String.format(

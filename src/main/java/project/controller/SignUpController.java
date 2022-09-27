@@ -1,11 +1,11 @@
-package controller;
+package project.controller;
 
 
-import jpa.db.Database;
-import http.HttpResponse;
-import http.HttpStatus;
-import jpa.entity.User;
-import http.HttpRequest;
+import project.jpa.repository.UserRepository;
+import project.http.HttpResponse;
+import project.http.HttpStatus;
+import project.jpa.entity.User;
+import project.http.HttpRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.HashMap;
@@ -15,10 +15,16 @@ public class SignUpController implements Controller {
 
     private static final Logger logger = LoggerFactory.getLogger(SignUpController.class);
 
+    private UserRepository userRepository;
+
+    public SignUpController(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
     @Override
     public HttpResponse process(HttpRequest httpRequest) {
         User user = createUser(httpRequest.getBody());
-        Database.addUser(user);
+        userRepository.save(user);
 
         return new HttpResponse.Builder(HttpStatus.REDIRECT)
                 .header("Location", "/index.html")

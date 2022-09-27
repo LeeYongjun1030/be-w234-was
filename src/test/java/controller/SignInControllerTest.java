@@ -1,17 +1,19 @@
 package controller;
 
-import jpa.db.Database;
-import http.HttpMethod;
-import http.HttpRequest;
-import http.HttpResponse;
-import jpa.entity.User;
-import org.junit.jupiter.api.AfterEach;
+import project.controller.Controller;
+import project.controller.SignInController;
+import project.jpa.repository.UserRepository;
+import project.http.HttpMethod;
+import project.http.HttpRequest;
+import project.http.HttpResponse;
+import project.jpa.entity.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
+@Transactional
 public class SignInControllerTest {
 
     private Controller controller;
@@ -19,13 +21,9 @@ public class SignInControllerTest {
 
     @BeforeEach
     void beforeEach() {
-        controller = new SignInController();
-        Database.addUser(user);
-    }
-
-    @AfterEach
-    void afterEach() {
-        Database.clear();
+        UserRepository userRepository = new UserRepository();
+        controller = new SignInController(userRepository);
+        userRepository.save(user);
     }
 
     @Test

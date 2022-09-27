@@ -1,29 +1,30 @@
 package controller;
 
-import jpa.db.Database;
-import http.HttpMethod;
-import jpa.entity.User;
-import org.junit.jupiter.api.AfterEach;
+import project.controller.Controller;
+import project.controller.SignUpController;
+import project.http.HttpMethod;
+import project.jpa.repository.UserRepository;
+import project.jpa.entity.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import http.HttpRequest;
+import project.http.HttpRequest;
+import org.springframework.transaction.annotation.Transactional;
+
 import static org.assertj.core.api.Assertions.*;
 
+@Transactional
 public class SignUpControllerTest {
 
+    private UserRepository userRepository;
     private Controller controller;
     private SignUp signUp;
 
     @BeforeEach
     void beforeEach() {
-        controller = new SignUpController();
+        userRepository = new UserRepository();
+        controller = new SignUpController(userRepository);
         signUp = new SignUp("testId", "password", "taki", "taki@abcd.com");
-    }
-
-    @AfterEach
-    void afterEach() {
-        Database.clear();
     }
 
     @Test
@@ -36,7 +37,7 @@ public class SignUpControllerTest {
         controller.process(httpRequest);
 
         //then
-        User sut = Database.findUserById(signUp.userId);
+        User sut = userRepository.findById(signUp.userId);
         assertThat(sut.getName()).isEqualTo(signUp.name);
         assertThat(sut.getEmail()).isEqualTo(signUp.email);
     }
