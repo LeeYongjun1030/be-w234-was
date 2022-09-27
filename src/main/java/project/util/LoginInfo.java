@@ -1,4 +1,4 @@
-package util;
+package project.util;
 
 public class LoginInfo {
     private String userId;

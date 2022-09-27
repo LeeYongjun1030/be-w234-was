@@ -2,6 +2,10 @@ package http;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import project.http.HttpMethod;
+import project.http.HttpRequest;
+import project.http.RequestParser;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;

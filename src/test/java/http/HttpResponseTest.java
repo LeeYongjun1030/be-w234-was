@@ -2,6 +2,9 @@ package http;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import project.http.HttpResponse;
+import project.http.HttpStatus;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class HttpResponseTest {

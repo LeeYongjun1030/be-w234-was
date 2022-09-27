@@ -1,4 +1,4 @@
-package http;
+package project.http;
 
 public enum HttpStatus {
 

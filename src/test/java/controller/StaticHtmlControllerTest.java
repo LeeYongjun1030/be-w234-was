@@ -1,11 +1,13 @@
 package controller;
 
-import http.HttpMethod;
-import http.HttpResponse;
+import project.controller.Controller;
+import project.controller.StaticHtmlController;
+import project.http.HttpMethod;
+import project.http.HttpResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import http.HttpRequest;
+import project.http.HttpRequest;
 import static org.assertj.core.api.Assertions.*;
 
 public class StaticHtmlControllerTest {
