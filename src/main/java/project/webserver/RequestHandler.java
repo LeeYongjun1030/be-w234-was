@@ -1,15 +1,15 @@
-package webserver;
+package project.webserver;
 
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
-import http.HttpRequest;
-import http.HttpResponse;
-import http.RequestParser;
+import project.http.HttpRequest;
+import project.http.HttpResponse;
+import project.http.RequestParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import controller.ControllerMapper;
-import controller.Controller;
+import project.controller.ControllerMapper;
+import project.controller.Controller;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -17,7 +17,7 @@ public class RequestHandler implements Runnable {
     private Socket connection;
 
     private RequestParser requestParser = new RequestParser();
-    private ControllerMapper controllerMapper = new ControllerMapper();
+    private ControllerMapper controllerMapper = ControllerMapper.getInstance();
 
     public RequestHandler(Socket connectionSocket) {
         this.connection = connectionSocket;
