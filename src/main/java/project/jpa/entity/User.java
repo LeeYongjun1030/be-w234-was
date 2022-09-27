@@ -1,10 +1,17 @@
-package model;
+package project.jpa.entity;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity(name = "USER")
 public class User {
+    @Id
     private String userId;
     private String password;
     private String name;
     private String email;
+
+    public User(){}
 
     public User(String userId, String password, String name, String email) {
         this.userId = userId;
