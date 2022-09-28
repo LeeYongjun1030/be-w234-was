@@ -13,77 +13,120 @@ import java.util.Map;
 public class RequestParser {
     private static final Logger logger = LoggerFactory.getLogger(RequestParser.class);
 
-    public HttpRequest parse(BufferedReader reader) throws IOException {
-        String startLine = reader.readLine();
-        String url = getUrl(startLine);
+    private BufferedReader reader;
+    private String startLine;
+    private String url;
 
-        // make http-request-object
-        HttpMethod httpMethod = getHttpMethod(startLine);
-        String path = getPath(url);
-        Map<String, String> params = getParams(url);
-        Map<String, String> headers = getHeaders(reader);
-        String body = getBody(reader, headers);
-        return new HttpRequest.Builder(httpMethod)
-                .path(path)
-                .params(params)
-                .headers(headers)
-                .body(body)
-                .build();
+    private HttpMethod httpMethod;
+
+    private String path;
+
+    private Map<String, String> params = new HashMap<>();
+
+    private Map<String, String> headers = new HashMap<>();
+
+    private String body;
+
+    public RequestParser(BufferedReader reader) {
+        this.reader = reader;
     }
 
-    private String getUrl(String startLine) {
+    public HttpRequest parse() throws IOException {
+        parseStartlineAndUrl();
+        parseHttpMethod();
+        parsePath();
+        parseParams();
+        parseHeaders();
+        parseBody();
+        return createHttpRequestFromParsedData();
+    }
+
+    private void parseStartlineAndUrl() throws IOException {
+        this.startLine = reader.readLine();
         String[] tokens = startLine.split(" ");
-        return tokens[1];
+        this.url = tokens[1];
     }
 
-    private HttpMethod getHttpMethod(String startLine) {
+    private void parseHttpMethod() {
         String[] tokens = startLine.split(" ");
-        return HttpMethod.valueOf(tokens[0].toUpperCase());
+        this.httpMethod = HttpMethod.valueOf(tokens[0].toUpperCase());
     }
 
-    private String getPath(String url) {
+    private void parsePath() {
         String[] tokens = url.split("\\?");
-        return tokens[0];
+        this.path = tokens[0];
     }
 
-    private Map<String, String> getParams(String url) {
-        Map<String, String> params = new HashMap<>();
-
+    private void parseParams() {
         String[] tokens = url.split("\\?");
-
-        if (tokens.length == 1) { // no params
-            return null;
+        if (hasParams(tokens)) {
+            String[] pairs = getParamPairs(tokens);
+            putParam(pairs);
         }
+    }
 
-        // queryParams에는 url의 ? 이후의 쿼리파라미터가 담긴다.
+    private boolean hasParams(String[] tokens) {
+        return tokens.length > 1;
+    }
+
+    private String[] getParamPairs(String[] tokens) {
         String queryParams = tokens[1];
         String[] pairs = queryParams.split("&");
+        return pairs;
+    }
+
+    private void putParam(String[] pairs) {
         for (String pair : pairs) {
             String[] keyAndVal = pair.split("=");
             String key = keyAndVal[0];
             String val = keyAndVal[1];
             params.put(key, val);
         }
-        return params;
     }
 
-    private Map<String, String> getHeaders(BufferedReader reader) throws IOException {
-        Map<String, String> headers = new HashMap<>();
+    private void parseHeaders() throws IOException {
         String line;
         while (!"".equals((line = reader.readLine()))&& line != null) {
-            String[] keyVal = line.split(": ", 2);
-            headers.put(keyVal[0], keyVal[1]);
+            String[] keyVal = line.split(":", 2);
+            headers.put(keyVal[0].trim(), keyVal[1].trim());
         }
-        return headers;
     }
 
-    private String getBody(BufferedReader reader, Map<String, String> headers) throws IOException {
-        String body = null;
-        if (headers.containsKey("Content-Length")) {
+    private void parseBody() throws IOException {
+        if (hasBody()) {
             int contentLength = Integer.parseInt(headers.get("Content-Length"));
             String data = IOUtils.readData(reader, contentLength);
             body = URLDecoder.decode(data, StandardCharsets.UTF_8);
         }
-        return body;
     }
+
+    private boolean hasBody() {
+        return headers.containsKey("Content-Length");
+    }
+
+    private HttpRequest createHttpRequestFromParsedData() {
+        HttpRequest.Builder intermediateProduct = new HttpRequest.Builder(httpMethod).path(path);
+        intermediateProduct = setParams(intermediateProduct);
+        intermediateProduct = setHeaders(intermediateProduct);
+        intermediateProduct = intermediateProduct.body(body);
+        HttpRequest httpRequest = intermediateProduct.build();
+        return httpRequest;
+    }
+
+    private HttpRequest.Builder setParams(HttpRequest.Builder b) {
+        for (String key : params.keySet()) {
+            String val = params.get(key);
+            b = b.param(key, val);
+        }
+        return b;
+    }
+
+    private HttpRequest.Builder setHeaders(HttpRequest.Builder b) {
+        for (String key : headers.keySet()) {
+            String val = headers.get(key);
+            b = b.header(key, val);
+        }
+        return b;
+    }
+
 }
