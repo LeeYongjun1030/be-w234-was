@@ -16,7 +16,7 @@ public class RequestHandler implements Runnable {
 
     private Socket connection;
 
-    private RequestParser requestParser = new RequestParser();
+    private RequestParser requestParser;
     private ControllerMapper controllerMapper = ControllerMapper.getInstance();
 
     public RequestHandler(Socket connectionSocket) {
@@ -28,7 +28,8 @@ public class RequestHandler implements Runnable {
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
-            HttpRequest httpRequest = requestParser.parse(br);
+            requestParser = new RequestParser(br);
+            HttpRequest httpRequest = requestParser.parse();
             Controller controller = controllerMapper.controllerMapping(httpRequest.getPath());
             HttpResponse httpResponse = controller.process(httpRequest);
             writeResponse(out, httpResponse);
