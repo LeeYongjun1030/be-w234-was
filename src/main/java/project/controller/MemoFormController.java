@@ -1,5 +1,7 @@
 package project.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import project.http.*;
 import project.jpa.entity.Memo;
 import project.jpa.entity.User;
@@ -10,6 +12,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 
 public class MemoFormController implements Controller {
+    private static final Logger logger = LoggerFactory.getLogger(MemoFormController.class);
 
     private HttpRequest httpRequest;
     private UserRepository userRepository;
@@ -30,8 +33,9 @@ public class MemoFormController implements Controller {
                 return createAndSaveMemo();
 
             return isLogin() ? createMemoForm() : loginForm() ;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (RuntimeException | IOException e) {
+            logger.error(e.getMessage());
+            return redirectToHome();
         }
     }
 
@@ -60,9 +64,7 @@ public class MemoFormController implements Controller {
         Memo memo = createMemo(contents);
         memoRepository.save(memo);
 
-        return new HttpResponse.Builder(HttpStatus.REDIRECT)
-                .header("Location", "/index.html")
-                .build();
+        return redirectToHome();
     }
 
     private String readContentsFromReq() {
@@ -79,6 +81,12 @@ public class MemoFormController implements Controller {
         Cookie cookie = httpRequest.getCookie();
         String userId = cookie.get("logined");
         return userRepository.findById(userId);
+    }
+
+    private HttpResponse redirectToHome() {
+        return new HttpResponse.Builder(HttpStatus.REDIRECT)
+                .header("Location", "/index.html")
+                .build();
     }
 
 }
