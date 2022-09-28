@@ -21,7 +21,7 @@ public class UserListController implements Controller{
 
     @Override
     public HttpResponse process(HttpRequest httpRequest) {
-        return (isLogined(httpRequest)) ? userList() : requestLogin();
+        return (isLogined(httpRequest)) ? userList() : loginForm();
     }
 
     private boolean isLogined(HttpRequest httpRequest) {
@@ -42,7 +42,7 @@ public class UserListController implements Controller{
                 .build();
     }
 
-    private HttpResponse requestLogin() {
+    private HttpResponse loginForm() {
         return new HttpResponse.Builder(HttpStatus.REDIRECT)
                 .header("Location", "/user/login.html")
                 .build();
