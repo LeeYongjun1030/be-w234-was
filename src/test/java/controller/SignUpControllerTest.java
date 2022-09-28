@@ -5,27 +5,18 @@ import project.controller.SignUpController;
 import project.http.HttpMethod;
 import project.jpa.repository.UserRepository;
 import project.jpa.entity.User;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import project.http.HttpRequest;
 import org.springframework.transaction.annotation.Transactional;
-
 import static org.assertj.core.api.Assertions.*;
 
 @Transactional
 public class SignUpControllerTest {
 
-    private UserRepository userRepository;
-    private Controller controller;
-    private SignUp signUp;
-
-    @BeforeEach
-    void beforeEach() {
-        userRepository = new UserRepository();
-        controller = new SignUpController(userRepository);
-        signUp = new SignUp("testId", "password", "taki", "taki@abcd.com");
-    }
+    private UserRepository userRepository = new UserRepository();
+    private Controller controller = new SignUpController(userRepository);
+    private SignUp signUp = new SignUp("testId", "password", "taki", "taki@abcd.com");
 
     @Test
     @DisplayName("회원가입 시 회원 정보가 User 클래스에 저장되어야 한다")
