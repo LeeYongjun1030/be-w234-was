@@ -19,6 +19,7 @@ public class ControllerMapper {
         handlers.put("/user/login", new SignInController(userRepository));
         handlers.put("/user/list", new UserListController(userRepository));
         handlers.put("/qna", new MemoController(userRepository, memoRepository));
+        handlers.put("/qna/list", new MemoListController(memoRepository));
     }
 
     public static ControllerMapper getInstance() {
