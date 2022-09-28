@@ -2,11 +2,8 @@ package controller;
 
 import project.controller.Controller;
 import project.controller.UserListController;
+import project.http.*;
 import project.jpa.repository.UserRepository;
-import project.http.HttpMethod;
-import project.http.HttpRequest;
-import project.http.HttpResponse;
-import project.http.HttpStatus;
 import project.jpa.entity.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,7 +26,10 @@ public class UserListControllerTest {
     @DisplayName("로그인 사용자가 /user/list에 접근하면 유저 목록을 반환해주어야 한다")
     void getUserList() {
         //given
-        HttpRequest httpRequest = createHttpRequestOf("logined=true");
+        HttpRequest httpRequest = new HttpRequest.Builder(HttpMethod.GET)
+                .path("/user/list")
+                .cookie(new Cookie("logined", "test-id", "/"))
+                .build();
 
         //when
         HttpResponse sut = controller.process(httpRequest);
@@ -41,7 +41,10 @@ public class UserListControllerTest {
     @Test
     @DisplayName("비로그인 사용자가 /user/list에 접근하면 로그인 페이지로 이동해야 한다")
     void redirectLoginPage() {
-        HttpRequest httpRequest = createHttpRequestOf("logined=false");
+        //given
+        HttpRequest httpRequest = new HttpRequest.Builder(HttpMethod.GET)
+                .path("/user/list")
+                .build();
 
         //when
         HttpResponse sut = controller.process(httpRequest);
@@ -49,15 +52,5 @@ public class UserListControllerTest {
         //then
         assertThat(sut.getHttpStatus()).isEqualTo(HttpStatus.REDIRECT);
     }
-
-    private HttpRequest createHttpRequestOf(String val) {
-        //given
-        HttpRequest httpRequest = new HttpRequest.Builder(HttpMethod.GET)
-                .path("/user/list")
-                .header("Cookie", val)
-                .build();
-        return httpRequest;
-    }
-
 
 }
