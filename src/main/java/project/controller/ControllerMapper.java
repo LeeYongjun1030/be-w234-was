@@ -1,5 +1,6 @@
 package project.controller;
 
+import project.jpa.repository.MemoRepository;
 import project.jpa.repository.UserRepository;
 import java.io.File;
 import java.util.HashMap;
@@ -12,11 +13,12 @@ public class ControllerMapper {
 
     private ControllerMapper() {
         UserRepository userRepository = new UserRepository();
+        MemoRepository memoRepository = new MemoRepository();
 
         handlers.put("/user/create", new SignUpController(userRepository));
         handlers.put("/user/login", new SignInController(userRepository));
         handlers.put("/user/list", new UserListController(userRepository));
-        handlers.put("/qna", new MemoFormController());
+        handlers.put("/qna", new MemoFormController(userRepository, memoRepository));
     }
 
     public static ControllerMapper getInstance() {
