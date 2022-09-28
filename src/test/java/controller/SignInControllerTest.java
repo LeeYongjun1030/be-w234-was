@@ -29,7 +29,7 @@ public class SignInControllerTest {
     @DisplayName("로그인 입력 정보가 올바르면 로그인에 성공해야 한다")
     void signInSuccess() {
         //given
-        HttpRequest httpRequest = createHttpRequestFromInput(user.getUserId(), user.getPassword());
+        HttpRequest httpRequest = createHttpRequestFrom(user.getUserId(), user.getPassword());
 
         //when
         HttpResponse sut = controller.process(httpRequest);
@@ -42,8 +42,8 @@ public class SignInControllerTest {
     @DisplayName("존재하지 않는 로그인 아이디를 입력하면 로그인에 실패해야 한다")
     void signInFail() {
         //given
-        String userId = "wrong-id";
-        HttpRequest httpRequest = createHttpRequestFromInput(userId, user.getPassword());
+        String userId = "wrong-userId";
+        HttpRequest httpRequest = createHttpRequestFrom(userId, user.getPassword());
 
         //when
         HttpResponse sut = controller.process(httpRequest);
@@ -53,11 +53,11 @@ public class SignInControllerTest {
     }
 
     @Test
-    @DisplayName("아이디는 올바르나 비밀번호가 올바르지 않으면 로그인에 실패해야 한다")
+    @DisplayName("비밀번호가 올바르지 않으면 로그인에 실패해야 한다")
     void signInFail2() {
         //given
         String password = "wrong-password";
-        HttpRequest httpRequest = createHttpRequestFromInput(user.getUserId(), password);
+        HttpRequest httpRequest = createHttpRequestFrom(user.getUserId(), password);
 
         //when
         HttpResponse sut = controller.process(httpRequest);
@@ -66,7 +66,7 @@ public class SignInControllerTest {
         assertThat(sut.getHeaders().get("Set-Cookie")).isEqualTo("logined=false; Path=/");
     }
 
-    private HttpRequest createHttpRequestFromInput(String userId, String password) {
+    private HttpRequest createHttpRequestFrom(String userId, String password) {
         String loginInput = String.format("userId=%s&password=%s", userId, password);
         return new HttpRequest.Builder(HttpMethod.GET)
                 .body(loginInput)
