@@ -1,26 +1,43 @@
 package project.controller;
 
-import project.http.HttpRequest;
-import project.http.HttpResponse;
-import project.http.HttpStatus;
+import project.http.*;
+import project.jpa.entity.Memo;
+import project.jpa.entity.User;
+import project.jpa.repository.MemoRepository;
+import project.jpa.repository.UserRepository;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
 public class MemoFormController implements Controller {
 
+    private HttpRequest httpRequest;
+    private UserRepository userRepository;
+    private MemoRepository memoRepository;
+
+    public MemoFormController(UserRepository userRepository, MemoRepository memoRepository) {
+        this.userRepository = userRepository;
+        this.memoRepository = memoRepository;
+    }
+
     @Override
     public HttpResponse process(HttpRequest httpRequest) {
         try {
-            return isLogin(httpRequest) ? createMemoForm() : loginForm() ;
+            this.httpRequest = httpRequest;
+            HttpMethod httpMethod = httpRequest.getHttpMethod();
+
+            if (httpMethod.equals(HttpMethod.POST))
+                return createAndSaveMemo();
+
+            return isLogin() ? createMemoForm() : loginForm() ;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private boolean isLogin(HttpRequest httpRequest) {
-        String cookie = httpRequest.getHeader("Cookie");
-        return cookie != null && cookie.equals("logined=true");
+    private boolean isLogin() {
+        Cookie cookie = httpRequest.getCookie();
+        return cookie != null && cookie.get("logined") != null;
     }
 
     private HttpResponse createMemoForm() throws IOException {
@@ -37,4 +54,31 @@ public class MemoFormController implements Controller {
                 .header("Location", "/user/login.html")
                 .build();
     }
+
+    private HttpResponse createAndSaveMemo() {
+        String contents = readContents();
+        Memo memo = createMemo(contents);
+        memoRepository.save(memo);
+
+        return new HttpResponse.Builder(HttpStatus.REDIRECT)
+                .header("Location", "/index.html")
+                .build();
+    }
+
+    private Memo createMemo(String contents) {
+        User user = findUser();
+        return new Memo(user, contents);
+    }
+
+    private User findUser() {
+        Cookie cookie = httpRequest.getCookie();
+        String userId = cookie.get("logined");
+        return userRepository.findById(userId);
+    }
+
+    private String readContents() {
+        String[] s = httpRequest.getBody().split("=");
+        return s[1];
+    }
+
 }
