@@ -25,6 +25,8 @@ public class RequestParser {
 
     private Map<String, String> headers = new HashMap<>();
 
+    private Cookie cookie;
+
     private String body;
 
     public RequestParser(BufferedReader reader) {
@@ -88,8 +90,16 @@ public class RequestParser {
         String line;
         while (!"".equals((line = reader.readLine()))&& line != null) {
             String[] keyVal = line.split(":", 2);
+            if(keyVal[0].equals("Cookie")) {
+                parseCookie(keyVal[1]);
+                continue;
+            }
             headers.put(keyVal[0].trim(), keyVal[1].trim());
         }
+    }
+
+    private void parseCookie(String cookieQuery) {
+        cookie = new Cookie(cookieQuery);
     }
 
     private void parseBody() throws IOException {
@@ -108,7 +118,8 @@ public class RequestParser {
         HttpRequest.Builder intermediateProduct = new HttpRequest.Builder(httpMethod).path(path);
         intermediateProduct = setParams(intermediateProduct);
         intermediateProduct = setHeaders(intermediateProduct);
-        intermediateProduct = intermediateProduct.body(body);
+        intermediateProduct = setCookie(intermediateProduct);
+        intermediateProduct = setBody(intermediateProduct);
         HttpRequest httpRequest = intermediateProduct.build();
         return httpRequest;
     }
@@ -129,4 +140,12 @@ public class RequestParser {
         return b;
     }
 
+    private HttpRequest.Builder setCookie(HttpRequest.Builder b) {
+        b.cookie(cookie);
+        return b;
+    }
+
+    private HttpRequest.Builder setBody(HttpRequest.Builder b) {
+        return b.body(body);
+    }
 }
