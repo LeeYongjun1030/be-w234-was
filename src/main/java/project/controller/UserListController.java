@@ -8,7 +8,6 @@ import project.jpa.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.Collection;
-import java.util.Map;
 
 public class UserListController implements Controller{
 
@@ -26,15 +25,8 @@ public class UserListController implements Controller{
     }
 
     private boolean isLogined(HttpRequest httpRequest) {
-        boolean isLogin = false;
-        Map<String, String> headers = httpRequest.getHeaders();
-        if (headers.containsKey("Cookie")) {
-            if (headers.get("Cookie").equals("logined=true")) {
-                isLogin = true;
-            }
-        }
-        logger.debug("IsLoginUser {}", isLogin);
-        return isLogin;
+        String cookie = httpRequest.getHeader("Cookie");
+        return cookie != null && cookie.equals("logined=true");
     }
 
     private HttpResponse userList() {

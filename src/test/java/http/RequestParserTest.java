@@ -26,13 +26,13 @@ public class RequestParserTest {
         //then
         assertThat(sut.getHttpMethod()).isEqualTo(HttpMethod.GET);
         assertThat(sut.getPath()).isEqualTo("/test");
-        assertThat(sut.getParams().get("name")).isEqualTo("james");
-        assertThat(sut.getParams().get("age")).isEqualTo("28");
+        assertThat(sut.getParam("name")).isEqualTo("james");
+        assertThat(sut.getParam("age")).isEqualTo("28");
     }
 
     @Test
-    @DisplayName("url에 파라미터가 없는 경우, 생성된 HttpRequest의 params 속성은 빈 객체여야 한다")
-    void getParamsNullTest() throws IOException {
+    @DisplayName("url에 파라미터가 없는 경우에도 HttpRequest 객체를 만들어낼 수 있어야 한다.")
+    void parsingTest_noParams() throws IOException {
         //given
         String msg = "GET /test HTTP/1.1";
         RequestParser requestParser = createRequestParser(msg);
@@ -41,7 +41,7 @@ public class RequestParserTest {
         HttpRequest sut = requestParser.parse();
 
         //then
-        assertThat(sut.getParams().size()).isEqualTo(0);
+        assertThat(sut).isNotNull();
     }
 
     private RequestParser createRequestParser(String msg) {
