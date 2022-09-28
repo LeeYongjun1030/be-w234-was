@@ -2,7 +2,6 @@ package project.http;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,6 +13,9 @@ public class HttpRequest {
     private String path;
     private Map<String, String> params;
     private Map<String, String> headers;
+
+    private Cookie cookie;
+
     private String body;
 
 
@@ -22,12 +24,14 @@ public class HttpRequest {
         this.path = builder.path;
         this.params = builder.params;
         this.headers = builder.headers;
+        this.cookie = builder.cookie;
         this.body = builder.body;
 
         logger.debug("Http method : {}", httpMethod);
         logger.debug("Path : {}", path);
         logger.debug("Params : {}", params);
         logger.debug("Headers : {}", headers);
+        logger.debug("Cookie : {}", cookie);
         logger.debug("Body : {}", body);
     }
 
@@ -47,6 +51,10 @@ public class HttpRequest {
         return headers.get(key);
     }
 
+    public Cookie getCookie(){
+        return cookie;
+    }
+
     public String getBody() {
         return body;
     }
@@ -59,6 +67,9 @@ public class HttpRequest {
         private String path;
         private Map<String, String> params = new HashMap<>();
         private Map<String, String> headers = new HashMap<>();
+
+        private Cookie cookie;
+
         private String body;
 
         public Builder(HttpMethod httpMethod) {
@@ -77,6 +88,11 @@ public class HttpRequest {
 
         public Builder header(String key, String val) {
             this.headers.put(key, val);
+            return this;
+        }
+
+        public Builder cookie(Cookie cookie) {
+            this.cookie = cookie;
             return this;
         }
 
