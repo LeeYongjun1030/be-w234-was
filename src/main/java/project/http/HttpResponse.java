@@ -32,8 +32,8 @@ public class HttpResponse {
         return httpStatus;
     }
 
-    public Map<String, String> getHeaders() {
-        return headers;
+    public String getHeader(String key) {
+        return headers.get(key);
     }
 
     public byte[] getBody() {
