@@ -4,18 +4,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import project.http.HttpResponse;
 import project.http.HttpStatus;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class HttpResponseTest {
-
-    HttpResponse httpResponse;
-
     @Test
     @DisplayName("HttpResponse 객체로부터 http 응답 메시지를 만들어낼 수 있어야 한다 - body가 없는 경우")
-    void createMsgWithBodilessResponse() {
+    void createHttpRespTest_hasBody_false() {
         //given
-        httpResponse = new HttpResponse.Builder(HttpStatus.SUCCESSFUL)
+        HttpResponse httpResponse = new HttpResponse.Builder(HttpStatus.SUCCESSFUL)
                 .header("Content-Type", "text/html;charset=utf-8")
                 .build();
 
@@ -30,16 +26,10 @@ public class HttpResponseTest {
 
     @Test
     @DisplayName("HttpResponse 객체로부터 http 응답 메시지를 만들어낼 수 있어야 한다 - body가 있는 경우")
-    void createMsgWithResponse() {
+    void createHttpRespTest_hasBody_true() {
         //given
-        String dataOfString = "This is response body.";
-        byte[] data = dataOfString.getBytes();
-
-        httpResponse = new HttpResponse.Builder(HttpStatus.SUCCESSFUL)
-                .header("Content-Type", "text/html;charset=utf-8")
-                .header("Content-Length", String.valueOf(data.length))
-                .body(data)
-                .build();
+        byte[] data = "fake-body-data".getBytes();
+        HttpResponse httpResponse = createHttpResp(data);
 
         //when
         byte[] sut = httpResponse.convertToByteData();
@@ -50,5 +40,13 @@ public class HttpResponseTest {
         assertThat(token[1]).isEqualTo("Content-Length: " + httpResponse.getBody().length);
         assertThat(token[2]).isEqualTo("Content-Type: text/html;charset=utf-8");
 
+    }
+
+    private HttpResponse createHttpResp(byte[] data) {
+        return new HttpResponse.Builder(HttpStatus.SUCCESSFUL)
+                .header("Content-Type", "text/html;charset=utf-8")
+                .header("Content-Length", String.valueOf(data.length))
+                .body(data)
+                .build();
     }
 }
