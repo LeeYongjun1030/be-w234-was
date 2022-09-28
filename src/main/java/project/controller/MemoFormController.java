@@ -56,13 +56,18 @@ public class MemoFormController implements Controller {
     }
 
     private HttpResponse createAndSaveMemo() {
-        String contents = readContents();
+        String contents = readContentsFromReq();
         Memo memo = createMemo(contents);
         memoRepository.save(memo);
 
         return new HttpResponse.Builder(HttpStatus.REDIRECT)
                 .header("Location", "/index.html")
                 .build();
+    }
+
+    private String readContentsFromReq() {
+        String[] s = httpRequest.getBody().split("=");
+        return s[1];
     }
 
     private Memo createMemo(String contents) {
@@ -74,11 +79,6 @@ public class MemoFormController implements Controller {
         Cookie cookie = httpRequest.getCookie();
         String userId = cookie.get("logined");
         return userRepository.findById(userId);
-    }
-
-    private String readContents() {
-        String[] s = httpRequest.getBody().split("=");
-        return s[1];
     }
 
 }
