@@ -14,13 +14,15 @@ public class SignInController implements Controller{
     private static final Logger logger = LoggerFactory.getLogger(SignInController.class);
     private UserRepository userRepository;
 
+    private LoginInfo loginInput;
+
     public SignInController(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
     @Override
     public HttpResponse process(HttpRequest httpRequest) {
-        LoginInfo loginInput = getLoginIdAndPassword(httpRequest.getBody());
+        loginInput = getLoginIdAndPassword(httpRequest.getBody());
         return verify(loginInput) ? loginSuccess() : loginFail();
     }
 
@@ -62,7 +64,7 @@ public class SignInController implements Controller{
         return new HttpResponse.Builder(HttpStatus.REDIRECT)
                 .header("Location", "/index.html")
                 .header("Content-Type", "text/html")
-                .header("Set-Cookie", "logined=true; Path=/")
+                .header("Set-Cookie", "logined=" + loginInput.getUserId() + "; Path=/")
                 .build();
     }
 
@@ -70,7 +72,6 @@ public class SignInController implements Controller{
         return new HttpResponse.Builder(HttpStatus.REDIRECT)
                 .header("Location", "/user/login_failed.html")
                 .header("Content-Type", "text/html")
-                .header("Set-Cookie", "logined=false; Path=/")
                 .build();
     }
 }
