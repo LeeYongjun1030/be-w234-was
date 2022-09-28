@@ -29,10 +29,7 @@ public class UserListControllerTest {
     @DisplayName("로그인 사용자가 /user/list에 접근하면 유저 목록을 반환해주어야 한다")
     void getUserList() {
         //given
-        HttpRequest httpRequest = new HttpRequest.Builder(HttpMethod.GET)
-                .path("/user/list")
-                .header("Cookie", "logined=true")
-                .build();
+        HttpRequest httpRequest = createHttpRequestOf("logined=true");
 
         //when
         HttpResponse sut = controller.process(httpRequest);
@@ -44,17 +41,22 @@ public class UserListControllerTest {
     @Test
     @DisplayName("비로그인 사용자가 /user/list에 접근하면 로그인 페이지로 이동해야 한다")
     void redirectLoginPage() {
-        //given
-        HttpRequest httpRequest = new HttpRequest.Builder(HttpMethod.GET)
-                .path("/user/list")
-                .header("Cookie", "logined=false")
-                .build();
+        HttpRequest httpRequest = createHttpRequestOf("logined=false");
 
         //when
         HttpResponse sut = controller.process(httpRequest);
 
         //then
         assertThat(sut.getHttpStatus()).isEqualTo(HttpStatus.REDIRECT);
+    }
+
+    private HttpRequest createHttpRequestOf(String val) {
+        //given
+        HttpRequest httpRequest = new HttpRequest.Builder(HttpMethod.GET)
+                .path("/user/list")
+                .header("Cookie", val)
+                .build();
+        return httpRequest;
     }
 
 
