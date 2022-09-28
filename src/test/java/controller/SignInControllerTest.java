@@ -35,7 +35,7 @@ public class SignInControllerTest {
         HttpResponse sut = controller.process(httpRequest);
 
         //then
-        assertThat(sut.getHeader("Set-Cookie")).isEqualTo("logined=true; Path=/");
+        assertThat(sut.getHeader("Set-Cookie")).isNotNull();
     }
 
     @Test
@@ -49,7 +49,7 @@ public class SignInControllerTest {
         HttpResponse sut = controller.process(httpRequest);
 
         //then
-        assertThat(sut.getHeader("Set-Cookie")).isEqualTo("logined=false; Path=/");
+        assertThat(sut.getHeader("Set-Cookie")).isNull();
     }
 
     @Test
@@ -63,7 +63,7 @@ public class SignInControllerTest {
         HttpResponse sut = controller.process(httpRequest);
 
         //then
-        assertThat(sut.getHeader("Set-Cookie")).isEqualTo("logined=false; Path=/");
+        assertThat(sut.getHeader("Set-Cookie")).isNull();
     }
 
     private HttpRequest createHttpRequestFrom(String userId, String password) {
