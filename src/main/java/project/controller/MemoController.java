@@ -11,14 +11,14 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-public class MemoFormController implements Controller {
-    private static final Logger logger = LoggerFactory.getLogger(MemoFormController.class);
+public class MemoController implements Controller {
+    private static final Logger logger = LoggerFactory.getLogger(MemoController.class);
 
     private HttpRequest httpRequest;
     private UserRepository userRepository;
     private MemoRepository memoRepository;
 
-    public MemoFormController(UserRepository userRepository, MemoRepository memoRepository) {
+    public MemoController(UserRepository userRepository, MemoRepository memoRepository) {
         this.userRepository = userRepository;
         this.memoRepository = memoRepository;
     }

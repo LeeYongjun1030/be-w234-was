@@ -5,7 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.transaction.annotation.Transactional;
 import project.controller.Controller;
-import project.controller.MemoFormController;
+import project.controller.MemoController;
 import project.http.*;
 import project.jpa.entity.Memo;
 import project.jpa.entity.User;
@@ -15,11 +15,11 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.*;
 
 @Transactional
-public class MemoFormControllerTest {
+public class MemoControllerTest {
 
     private UserRepository userRepository = new UserRepository();
     private MemoRepository memoRepository = new MemoRepository();
-    private Controller controller = new MemoFormController(userRepository, memoRepository);
+    private Controller controller = new MemoController(userRepository, memoRepository);
 
     private User user;
 
