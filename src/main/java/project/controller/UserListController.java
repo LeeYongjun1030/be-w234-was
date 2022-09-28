@@ -1,5 +1,6 @@
 package project.controller;
 
+import project.http.Cookie;
 import project.http.HttpRequest;
 import project.http.HttpResponse;
 import project.http.HttpStatus;
@@ -21,12 +22,12 @@ public class UserListController implements Controller{
 
     @Override
     public HttpResponse process(HttpRequest httpRequest) {
-        return (isLogined(httpRequest)) ? userList() : loginForm();
+        return (isLogin(httpRequest)) ? userList() : loginForm();
     }
 
-    private boolean isLogined(HttpRequest httpRequest) {
-        String cookie = httpRequest.getHeader("Cookie");
-        return cookie != null && cookie.equals("logined=true");
+    private boolean isLogin(HttpRequest httpRequest) {
+        Cookie cookie = httpRequest.getCookie();
+        return cookie != null && cookie.get("logined") != null;
     }
 
     private HttpResponse userList() {
