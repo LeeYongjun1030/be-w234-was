@@ -2,6 +2,8 @@ package project.http;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
 import java.util.Map;
 
 public class HttpRequest {
@@ -55,8 +57,8 @@ public class HttpRequest {
 
         private HttpMethod httpMethod;
         private String path;
-        private Map<String, String> params;
-        private Map<String, String> headers;
+        private Map<String, String> params = new HashMap<>();
+        private Map<String, String> headers = new HashMap<>();
         private String body;
 
         public Builder(HttpMethod httpMethod) {
@@ -68,13 +70,13 @@ public class HttpRequest {
             return this;
         }
 
-        public Builder params(Map<String, String> params) {
-            this.params = params;
+        public Builder param(String key, String val) {
+            this.params.put(key, val);
             return this;
         }
 
-        public Builder headers(Map<String, String> headers) {
-            this.headers = headers;
+        public Builder header(String key, String val) {
+            this.headers.put(key, val);
             return this;
         }
 
