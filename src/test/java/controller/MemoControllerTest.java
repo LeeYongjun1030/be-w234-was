@@ -30,7 +30,7 @@ public class MemoControllerTest {
     }
 
     @Test
-    @DisplayName("로그인 사용자의 경우 메모하기 버튼을 눌렀을 때 메모 폼이 보여야 한다")
+    @DisplayName("로그인 사용자의 경우 GET /qna 요청 시 메모 폼이 보여야 한다")
     void creatMemoForm() {
         //given
         HttpRequest httpRequest = new HttpRequest.Builder(HttpMethod.GET)
@@ -45,7 +45,7 @@ public class MemoControllerTest {
         assertThat(sut.getHttpStatus()).isEqualTo(HttpStatus.SUCCESSFUL);
     }
     @Test
-    @DisplayName("비로그인 사용자인 경우 메모하기 버튼을 눌렀을 때 로그인 화면으로 이동해야 한다")
+    @DisplayName("비로그인 사용자인 경우 GET /qna 요청 시 로그인 화면으로 이동해야 한다")
     void loginForm() {
         //given
         HttpRequest httpRequest = new HttpRequest.Builder(HttpMethod.GET)
@@ -60,7 +60,7 @@ public class MemoControllerTest {
     }
 
     @Test
-    @DisplayName("메모를 작성하면 메모 정보가 메모 클래스에 저장되어야 한다")
+    @DisplayName("POST /qna 요청 시 메모 정보가 메모 클래스에 저장되어야 한다")
     void createMemo() {
         //given
         String memo = "test-memo";
