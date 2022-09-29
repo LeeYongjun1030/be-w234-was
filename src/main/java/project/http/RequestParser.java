@@ -9,50 +9,34 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Stream;
 
 public class RequestParser {
 
     private static final Logger logger = LoggerFactory.getLogger(RequestParser.class);
-
     private static RequestParser instance;
-
     private BufferedReader reader;
     private String startLine;
     private String url;
-
     private HttpMethod httpMethod;
-
     private String path;
-
     private Map<String, String> params = new HashMap<>();
-
     private Map<String, String> headers = new HashMap<>();
-
     private Cookie cookie;
-
     private String body;
 
     private RequestParser() {}
 
     public static RequestParser getInstance() {
-        if (instance == null) {
-            instance = new RequestParser();
-        }
+        if (instance == null) instance = new RequestParser();
         return instance;
     }
 
     public HttpRequest parse(BufferedReader reader) throws IOException {
         this.reader = reader;
-
         parseStartLine();
         parseHeaders();
         parseBody();
-
-        HttpRequest.Builder product = new HttpRequest.Builder(httpMethod).path(path);
-        for (String key : params.keySet())  product = product.param(key, params.get(key));
-        for (String key : headers.keySet())  product = product.header(key, headers.get(key));
-        return product.cookie(cookie).body(body).build();
+        return createHttpReqFromParsedData();
     }
 
     private void parseStartLine() throws IOException {
@@ -104,5 +88,12 @@ public class RequestParser {
 
     private boolean hasBody() {
         return headers.containsKey("Content-Length");
+    }
+
+    private HttpRequest createHttpReqFromParsedData() {
+        HttpRequest.Builder product = new HttpRequest.Builder(httpMethod).path(path);
+        for (String key : params.keySet())  product = product.param(key, params.get(key));
+        for (String key : headers.keySet())  product = product.header(key, headers.get(key));
+        return product.cookie(cookie).body(body).build();
     }
 }
