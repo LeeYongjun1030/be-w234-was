@@ -9,6 +9,7 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 public class RequestParser {
 
@@ -44,47 +45,32 @@ public class RequestParser {
     public HttpRequest parse(BufferedReader reader) throws IOException {
         this.reader = reader;
 
-        parseStartlineAndUrl();
-        parseHttpMethod();
-        parsePath();
-        parseParams();
+        parseStartLine();
         parseHeaders();
         parseBody();
-        return createHttpRequestFromParsedData();
+
+        HttpRequest.Builder product = new HttpRequest.Builder(httpMethod).path(path);
+        for (String key : params.keySet())  product = product.param(key, params.get(key));
+        for (String key : headers.keySet())  product = product.header(key, headers.get(key));
+        return product.cookie(cookie).body(body).build();
     }
 
-    private void parseStartlineAndUrl() throws IOException {
-        this.startLine = reader.readLine();
+    private void parseStartLine() throws IOException {
+        startLine = reader.readLine();
         String[] tokens = startLine.split(" ");
-        this.url = tokens[1];
-    }
+        httpMethod = HttpMethod.valueOf(tokens[0].toUpperCase());
+        url = tokens[1];
 
-    private void parseHttpMethod() {
-        String[] tokens = startLine.split(" ");
-        this.httpMethod = HttpMethod.valueOf(tokens[0].toUpperCase());
-    }
-
-    private void parsePath() {
-        String[] tokens = url.split("\\?");
-        this.path = tokens[0];
-    }
-
-    private void parseParams() {
-        String[] tokens = url.split("\\?");
-        if (hasParams(tokens)) {
-            String[] pairs = getParamPairs(tokens);
-            putParam(pairs);
+        String[] s = url.split("\\?");
+        path = s[0];
+        if (hasParams(s)) {
+            String[] params = s[1].split("&");
+            putParam(params);
         }
     }
 
     private boolean hasParams(String[] tokens) {
         return tokens.length > 1;
-    }
-
-    private String[] getParamPairs(String[] tokens) {
-        String queryParams = tokens[1];
-        String[] pairs = queryParams.split("&");
-        return pairs;
     }
 
     private void putParam(String[] pairs) {
@@ -101,15 +87,11 @@ public class RequestParser {
         while (!"".equals((line = reader.readLine()))&& line != null) {
             String[] keyVal = line.split(":", 2);
             if(keyVal[0].equals("Cookie")) {
-                parseCookie(keyVal[1]);
+                cookie = new Cookie(keyVal[1]);
                 continue;
             }
             headers.put(keyVal[0].trim(), keyVal[1].trim());
         }
-    }
-
-    private void parseCookie(String cookieQuery) {
-        cookie = new Cookie(cookieQuery);
     }
 
     private void parseBody() throws IOException {
@@ -122,40 +104,5 @@ public class RequestParser {
 
     private boolean hasBody() {
         return headers.containsKey("Content-Length");
-    }
-
-    private HttpRequest createHttpRequestFromParsedData() {
-        HttpRequest.Builder intermediateProduct = new HttpRequest.Builder(httpMethod).path(path);
-        intermediateProduct = setParams(intermediateProduct);
-        intermediateProduct = setHeaders(intermediateProduct);
-        intermediateProduct = setCookie(intermediateProduct);
-        intermediateProduct = setBody(intermediateProduct);
-        HttpRequest httpRequest = intermediateProduct.build();
-        return httpRequest;
-    }
-
-    private HttpRequest.Builder setParams(HttpRequest.Builder b) {
-        for (String key : params.keySet()) {
-            String val = params.get(key);
-            b = b.param(key, val);
-        }
-        return b;
-    }
-
-    private HttpRequest.Builder setHeaders(HttpRequest.Builder b) {
-        for (String key : headers.keySet()) {
-            String val = headers.get(key);
-            b = b.header(key, val);
-        }
-        return b;
-    }
-
-    private HttpRequest.Builder setCookie(HttpRequest.Builder b) {
-        b.cookie(cookie);
-        return b;
-    }
-
-    private HttpRequest.Builder setBody(HttpRequest.Builder b) {
-        return b.body(body);
     }
 }
