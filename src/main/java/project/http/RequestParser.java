@@ -11,7 +11,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RequestParser {
+
     private static final Logger logger = LoggerFactory.getLogger(RequestParser.class);
+
+    private static RequestParser instance;
 
     private BufferedReader reader;
     private String startLine;
@@ -29,11 +32,18 @@ public class RequestParser {
 
     private String body;
 
-    public RequestParser(BufferedReader reader) {
-        this.reader = reader;
+    private RequestParser() {}
+
+    public static RequestParser getInstance() {
+        if (instance == null) {
+            instance = new RequestParser();
+        }
+        return instance;
     }
 
-    public HttpRequest parse() throws IOException {
+    public HttpRequest parse(BufferedReader reader) throws IOException {
+        this.reader = reader;
+
         parseStartlineAndUrl();
         parseHttpMethod();
         parsePath();
