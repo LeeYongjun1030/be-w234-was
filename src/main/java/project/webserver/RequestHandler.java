@@ -19,6 +19,9 @@ public class RequestHandler implements Runnable {
     private RequestParser requestParser;
     private ControllerMapper controllerMapper = ControllerMapper.getInstance();
 
+    private HttpRequest httpRequest;
+    private HttpResponse httpResponse;
+
     public RequestHandler(Socket connectionSocket) {
         this.connection = connectionSocket;
     }
@@ -27,23 +30,30 @@ public class RequestHandler implements Runnable {
         logger.debug("New Client Connect! Connected IP : {}, Port : {}", connection.getInetAddress(), connection.getPort());
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
-            BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
-            requestParser = new RequestParser(br);
-            HttpRequest httpRequest = requestParser.parse();
-            Controller controller = controllerMapper.controllerMapping(httpRequest.getPath());
-            HttpResponse httpResponse = controller.process(httpRequest);
-            writeResponse(out, httpResponse);
+            httpRequest = createHttpReqFromInputStream(in);
+            httpResponse = createHttpRespFromReq(httpRequest);
+            writeResponse(out);
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
     }
 
-    private void writeResponse(OutputStream out, HttpResponse httpResponse) {
+    private HttpRequest createHttpReqFromInputStream(InputStream in) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
+        requestParser = RequestParser.getInstance();
+        return requestParser.parse(br);
+    }
+
+    private HttpResponse createHttpRespFromReq(HttpRequest httpRequest) {
+        Controller controller = controllerMapper.controllerMapping(httpRequest.getPath());
+        return controller.process(httpRequest);
+    }
+
+    private void writeResponse(OutputStream out) {
         try {
-            DataOutputStream dos = new DataOutputStream(out);
             byte[] data = httpResponse.convertToByteData();
-            dos.write(data, 0, data.length);
-            dos.flush();
+            out.write(data, 0, data.length);
+            out.flush();
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
