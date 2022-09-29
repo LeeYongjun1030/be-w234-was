@@ -12,16 +12,16 @@ import static org.assertj.core.api.Assertions.*;
 
 public class RequestParserTest {
 
+    private RequestParser requestParser = RequestParser.getInstance();
+
     @Test
     @DisplayName("http 요청 메시지를 파싱하여 HttpRequest 객체를 만들어낼 수 있어야 한다.")
     void parsingTest() throws IOException {
         //given
-        String msg = "GET /test?name=james&age=28 HTTP/1.1\n" +
-                "Connection: keep-alive";
-        RequestParser requestParser = createRequestParser(msg);
+        BufferedReader br = getBufferedReaderFromString("GET /test?name=james&age=28 HTTP/1.1\nConnection: keep-alive");
 
         //when
-        HttpRequest sut = requestParser.parse();
+        HttpRequest sut = requestParser.parse(br);
 
         //then
         assertThat(sut.getHttpMethod()).isEqualTo(HttpMethod.GET);
@@ -30,22 +30,20 @@ public class RequestParserTest {
         assertThat(sut.getParam("age")).isEqualTo("28");
     }
 
+    private BufferedReader getBufferedReaderFromString(String msg) {
+        return new BufferedReader(new StringReader(msg));
+    }
+
     @Test
     @DisplayName("url에 파라미터가 없는 경우에도 HttpRequest 객체를 만들어낼 수 있어야 한다.")
     void parsingTest_noParams() throws IOException {
         //given
-        String msg = "GET /test HTTP/1.1";
-        RequestParser requestParser = createRequestParser(msg);
+        BufferedReader br = getBufferedReaderFromString("GET /test HTTP/1.1");
 
         //when
-        HttpRequest sut = requestParser.parse();
+        HttpRequest sut = requestParser.parse(br);
 
         //then
         assertThat(sut).isNotNull();
-    }
-
-    private RequestParser createRequestParser(String msg) {
-        BufferedReader br = new BufferedReader(new StringReader(msg));
-        return new RequestParser(br);
     }
 }
