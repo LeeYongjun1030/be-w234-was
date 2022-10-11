@@ -18,7 +18,7 @@ public class UserListControllerTest {
 
     @BeforeEach
     void beforeEach() {
-        userRepository.save(new User("test1134344ddddddasawdfdfdsdsddfdddsssd", "password", "taki", "taki@abc.com"));
+        userRepository.save(new User("test1134344ddddddasawdfdfdsdsddfdddsssdsss", "password", "taki", "taki@abc.com"));
         userRepository.save(new User("test2", "password", "roki", "roki@abc.com"));
     }
 
